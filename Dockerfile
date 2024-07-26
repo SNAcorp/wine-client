@@ -42,4 +42,4 @@ COPY wait-for-it.sh /wait-for-it.sh
 RUN chmod +x /wait-for-it.sh
 
 # Указываем команду для запуска приложения
-CMD ["/bin/bash", "-c", "/wait-for-it.sh db-1:5432 -- uvicorn main:app --host 0.0.0.0 --port 8000 & sleep 5 && chromium --no-sandbox --kiosk http://localhost:8000"]
+CMD ["/bin/bash", "-c", "uvicorn main:app --host 0.0.0.0 --port 8000 & sleep 5 && chromium --no-sandbox --kiosk http://localhost:8000"]
