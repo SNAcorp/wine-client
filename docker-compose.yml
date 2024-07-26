@@ -6,8 +6,10 @@ services:
       - "8000:8000"
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
+      - /run/dbus/system_bus_socket:/run/dbus/system_bus_socket
     environment:
       - DISPLAY=${DISPLAY}
+      - DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket
     devices:
       - "/dev/dri:/dev/dri"
       - "/dev/mem:/dev/mem"
