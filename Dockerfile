@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y \
     python3-rpi.gpio \
     python3-smbus \
     i2c-tools \
-    chromium-browser \
+    chromium \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -42,4 +42,4 @@ COPY wait-for-it.sh /wait-for-it.sh
 RUN chmod +x /wait-for-it.sh
 
 # Указываем команду для запуска приложения
-CMD ["/bin/bash", "-c", "/wait-for-it.sh db-1:5432 -- uvicorn main:app --host 0.0.0.0 --port 8000 & sleep 5 && chromium-browser --no-sandbox --kiosk http://localhost:8000"]
+CMD ["/bin/bash", "-c", "/wait-for-it.sh db-1:5432 -- uvicorn main:app --host 0.0.0.0 --port 8000 & sleep 5 && chromium --no-sandbox --kiosk http://localhost:8000"]
