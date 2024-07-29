@@ -10,6 +10,7 @@ from modules.RFIDReader import RFIDReader
 from modules.ButtonReader import ButtonReader
 from services.Dictionaries import Dictionaries
 from services.Registration import TerminalRegistration
+
 registration = TerminalRegistration()
 dictionaries = Dictionaries()
 app = FastAPI()
@@ -20,6 +21,7 @@ API_URL_REGISTRATION = "http://51.250.89.99/terminal/register-terminal"
 API_URL_USAGE = "http://51.250.89.99/terminal/use"
 portions = {"small": 0, "big": 1}
 portions_time = {}
+
 
 def use_terminal_portion(portion_type: str, rfid_code: str, slot_number: int):
     response = requests.post(
@@ -55,9 +57,10 @@ def fetch_bottles_data():
 @app.post("/rfid", response_class=JSONResponse)
 async def rfid() -> dict:
     rfid_reader = RFIDReader()
-    result = await rfid_reader.start_reading()
+    result = rfid_reader.start_reading()
     print("validate: " + result["is_valid"])
     return result
+
 
 # 352481425297
 @app.post("/button", response_class=JSONResponse)
@@ -77,11 +80,13 @@ async def get_bottles(request: Request):
     bottles = fetch_bottles_data()
     return templates.TemplateResponse("index.html", {"request": request, "bottles": bottles})
 
+
 @app.get("/bottle/{slot_number}", response_class=JSONResponse)
 async def get_bottle_detail(request: Request, slot_number: int):
     bottles = fetch_bottles_data()
     bottle = next((b for b in bottles if b['slot_number'] == slot_number), None)
     return bottle
+
 
 def open_browser():
     webview.create_window("WineTech", "http://127.0.0.1:8000", fullscreen=True)
