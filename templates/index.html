@@ -188,9 +188,10 @@
                 method: 'POST'
             })
             .then(response => response.json())
-            .then( data => {
-                if (!data.is_valid){
-                    showStep(0);
+            .then(data => {
+                if (data.is_valid === false){
+                    alert(result.message || 'Невалидный rfid');
+                    resetProgress();
                 }
                 rfidCode = data.rfid_code;
                 showStep(3); // Show step to press button
