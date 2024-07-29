@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y \
     libwebkit2gtk-4.0-dev \
     python3-rpi.gpio \
     python3-smbus \
+    python3-spidev \
     i2c-tools \
     chromium \
     x11-apps \
@@ -42,7 +43,7 @@ COPY . .
 COPY wait-for-it.sh /wait-for-it.sh
 RUN chmod +x /wait-for-it.sh
 
-RUN pip install smbus
+RUN pip install spidev RPi.GPIO smbus
 
 # Указываем команду для запуска приложения
 CMD ["/bin/bash", "-c", "uvicorn main:app --host 0.0.0.0 --port 8000"]
