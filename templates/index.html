@@ -192,6 +192,7 @@
                 if (data.is_valid === false){
                     alert('Невалидный rfid');
                     resetProgress();
+                    showStep(0);
                 }
                 rfidCode = data.rfid_code;
                 showStep(3); // Show step to press button
