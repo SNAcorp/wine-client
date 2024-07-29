@@ -193,7 +193,7 @@
                     alert('Невалидный rfid');
                     resetProgress();
                     showStep(0);
-                }
+                } else {
                 rfidCode = data.rfid_code;
                 showStep(3); // Show step to press button
                 document.getElementById('complete-button').onclick = function() {
@@ -215,6 +215,7 @@
                         }
                     });
                 };
+                }
             });
         }
 
