@@ -58,7 +58,7 @@ def fetch_bottles_data():
 async def rfid() -> dict:
     rfid_reader = RFIDReader()
     result = rfid_reader.start_reading()
-    print("validate: " + result)
+    print("validate: ", result)
     return result
 
 
