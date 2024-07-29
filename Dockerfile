@@ -42,6 +42,8 @@ COPY . .
 COPY wait-for-it.sh /wait-for-it.sh
 RUN chmod +x /wait-for-it.sh
 
+RUN pip install smbus
+
 # Указываем команду для запуска приложения
 CMD ["/bin/bash", "-c", "uvicorn main:app --host 0.0.0.0 --port 8000"]
 #& sleep 5 && chromium --no-sandbox --kiosk http://localhost:8000
