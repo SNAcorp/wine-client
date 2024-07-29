@@ -86,6 +86,9 @@
             margin-bottom: 20px;
             cursor: none;
         }
+        .inactive{
+            filter: chroma(100);
+        }
         .bottle-name {
             font-size: 2em;
             margin-bottom: 10px;
@@ -220,11 +223,19 @@
     <main>
         <div id="step-0" class="step active container animate__animated animate__fadeIn">
             {% for bottle in bottles %}
+            {% if bottle.remaining_volume < 0.12 %}
+                <div class="tile" style="cursor: none;">
+                    <img src="http://51.250.89.99/bottles/image/{{bottle.id}}/300" alt="{{ bottle.name }}" style="filter: grayscale(1)">
+                    <h2>{{ bottle.name }}</h2>
+                    <p>{{ bottle.location | replace('\n', ' · ') }}</p>
+                </div>
+            {% else %}
                 <div class="tile" onclick="selectSlot({{ bottle.slot_number }})" style="cursor: none;">
                     <img src="http://51.250.89.99/bottles/image/{{bottle.id}}/300" alt="{{ bottle.name }}">
                     <h2>{{ bottle.name }}</h2>
                     <p>{{ bottle.location | replace('\n', ' · ') }}</p>
                 </div>
+            {% endif %}
             {% endfor %}
         </div>
         <div id="step-1" class="step bottle-details">
