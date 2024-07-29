@@ -189,7 +189,7 @@
             })
             .then(response => response.json())
             .then(data => {
-                if (data.is_valid === false){
+                if (data.is_valid === False){
                     alert(result.message || 'Невалидный rfid');
                     resetProgress();
                 }
