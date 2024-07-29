@@ -19,7 +19,7 @@ API_URL_TEMPLATE = f"http://51.250.89.99/terminal/terminal-bottles/{registration
 API_URL_REGISTRATION = "http://51.250.89.99/terminal/register-terminal"
 API_URL_USAGE = "http://51.250.89.99/terminal/use"
 portions = {"small": 0, "big": 1}
-
+portions_time = {}
 
 def use_terminal_portion(portion_type: str, rfid_code: str, slot_number: int):
     response = requests.post(
@@ -45,6 +45,7 @@ def fetch_bottles_data():
         print(response.status_code)
         data = response.json()
         print(data)
+        portions_time = data["volumes"]
         return sorted(data['bottles'], key=lambda x: x['slot_number'])
     except requests.RequestException as e:
         print(f"Error fetching bottles data: {e}")
@@ -65,7 +66,7 @@ async def portion(request: Request):
     print(data.keys())
     slot_num, portion_type, rfid_code = data["slot_number"], data["portion_type"], data["rfid"]
     ButtonReader(slot_num)
-    DrinkDispenser(slot_num, 3)
+    DrinkDispenser(slot_num, portions_time[portion_type])
     response = use_terminal_portion(portion_type, rfid_code, slot_num)
     bottles = fetch_bottles_data()
     return {"success": True}
