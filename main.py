@@ -1,4 +1,3 @@
-import time
 from threading import Thread
 from fastapi.templating import Jinja2Templates
 import requests
@@ -6,19 +5,15 @@ import uvicorn
 import webview
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
-# from modules.DrinkDispenser import DrinkDispenser
-# from storage.Storage import Storage
-# from modules.RFIDReader import RFIDReader
-# from modules.ButtonReader import ButtonReader
+from modules.DrinkDispenser import DrinkDispenser
+from modules.RFIDReader import RFIDReader
+from modules.ButtonReader import ButtonReader
 from services.Dictionaries import Dictionaries
 from services.Registration import TerminalRegistration
 registration = TerminalRegistration()
 dictionaries = Dictionaries()
-# registration = TerminalRegistration()
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
-# terminal_id = 1
-# token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZXJtaW5hbF9pZCI6MSwicmVnaXN0cmF0aW9uX2RhdGUiOiIyMDI0LTA3LTI0VDAwOjAwOjAwIiwidWlkIjoiMjEzb2lzZGoxM2UifQ.UkgDOVoKdsy5DipVy8sf4SSlExNzDOY88bX-6DXBD1o"
 
 API_URL_TEMPLATE = f"http://51.250.89.99/terminal/terminal-bottles/{registration.terminal_id}"
 API_URL_REGISTRATION = "http://51.250.89.99/terminal/register-terminal"
@@ -58,10 +53,9 @@ def fetch_bottles_data():
 
 @app.post("/rfid", response_class=JSONResponse)
 async def rfid() -> dict:
-    # rfid_reader = RFIDReader()
-    # result = rfid_reader.start_reading()
-    time.sleep(5)
-    return {"is_valid": True, "rfid_code": "1"}
+    rfid_reader = RFIDReader()
+    result = rfid_reader.start_reading()
+    return result
 
 
 @app.post("/button", response_class=JSONResponse)
@@ -69,8 +63,8 @@ async def portion(request: Request):
     data = await request.json()
     print(data.keys())
     slot_num, portion_type, rfid_code = data["slot_number"], data["portion_type"], data["rfid"]
-    # ButtonReader(slot_num)
-    # DrinkDispenser(slot_num, volume)
+    ButtonReader(slot_num)
+    DrinkDispenser(slot_num, 3)
     response = use_terminal_portion(portion_type, rfid_code, slot_num)
     bottles = fetch_bottles_data()
     return {"success": True}

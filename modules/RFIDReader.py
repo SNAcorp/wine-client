@@ -65,7 +65,7 @@ class RFIDReader:
 
                 """Отправляем UID метки на сервер """
                 response = self.send_to_server(uid)
-
+                response["rfid_code"] = uid
                 """ Если доступ разрешен """
                 return response
                 
