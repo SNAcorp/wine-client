@@ -55,9 +55,10 @@ def fetch_bottles_data():
 async def rfid() -> dict:
     rfid_reader = RFIDReader()
     result = rfid_reader.start_reading()
+    print(result)
     return result
 
-
+# 352481425297
 @app.post("/button", response_class=JSONResponse)
 async def portion(request: Request):
     data = await request.json()
