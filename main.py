@@ -21,7 +21,7 @@ templates = Jinja2Templates(directory="templates")
 API_URL_TEMPLATE = f"http://51.250.89.99/terminal/terminal-bottles/{registration.terminal_id}"
 API_URL_REGISTRATION = "http://51.250.89.99/terminal/register-terminal"
 API_URL_USAGE = "http://51.250.89.99/terminal/use"
-portions = {"small": 0, "big": 1}
+portions = {}
 portions_time = {}
 
 
@@ -51,6 +51,8 @@ def fetch_bottles_data():
         print(data)
         global portions_time
         portions_time = data["volumes"]
+        global portions
+        portions = data["portions"]
         return sorted(data['bottles'], key=lambda x: x['slot_number'])
     except requests.RequestException as e:
         print(f"Error fetching bottles data: {e}")
@@ -100,10 +102,23 @@ def start_server():
     uvicorn.run(app, host="127.0.0.1", port=8000)
 
 
+def turn_off_all_leds():
+    """Метод для отключения всех светодиодов"""
+    storage = Storage()
+    pins = storage.get_all_led_pins
+    for slot in pins:
+        led_address, led_pin = slot
+        pin = Pin(led_address, led_pin)
+        pin.set_mode(PinMode.INPUT)
+        print("Житомирята")
+
 if __name__ == '__main__':
+    total_slots = 8
     # Запуск сервера в отдельном потоке
     server_thread = Thread(target=start_server)
     server_thread.start()
+
+    turn_off_all_leds(total_slots)
 
     # Запуск браузера в полноэкранном режиме
     webview.create_window("Wine App", "http://localhost:8000", fullscreen=True, text_select=False)

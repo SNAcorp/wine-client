@@ -67,28 +67,6 @@ class Storage:
         if not hasattr(cls, 'instance'):
             cls.instance = super(Storage, cls).__new__(cls)
         return cls.instance
-    
-    #     def __init__(self):
-    # #         self.clean()
-    #         self.setup()
-    # def clean(self):
-    #     self.__clean_pins(list(self.__pump_Pin.values()))
-    #     self.__clean_pins(list(self.__button_Pin.values()))
-    #     self.__clean_pins(list(self.__button_Pin_led.values()))
-    #     self.__clean_pins(list(self.__led_bottle.values()))
-    #
-    # def __clean_pins(self, lst: list):
-    #     for element in lst:
-    #         element.clear()
-
-    # def setup(self):
-    #     self.__setup_pins(list(self.__pump_Pin.values()), "output")
-    #     self.__setup_pins(list(self.__button_Pin.values()), "input")
-    #     self.__setup_pins(list(self.__button_Pin_led.values()), "output")
-    #     self.__setup_pins(list(self.__led_bottle.values()), "output")
-    # def __setup_pins(self, lst: list, status: str) -> None:
-    #     for element in lst:
-    #         element.set_mode(status)
 
     @property
     def get_log_file_path(self) -> str:
@@ -96,6 +74,14 @@ class Storage:
         Возвращаем путь к файлу с логами
         """
         return self.__path_to_log_file
+
+    @property
+    def get_all_led_pins(self) -> list:
+        """
+        Возвращаем все пины
+        """
+        return list(self.__button_Pin_led.values())
+
 
     @property
     def get_swap_file_path(self) -> str:
