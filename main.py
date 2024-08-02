@@ -96,26 +96,27 @@ def open_browser():
     webview.start()
 
 
-def start_server(total_slots: int):
+def start_server():
     uvicorn.run(app, host="127.0.0.1", port=8000)
-    turn_off_all_leds(total_slots)
 
 
 def turn_off_all_leds(total_slots: int):
     """Метод для отключения всех светодиодов"""
+    storage = Storage()
     for slot in range(total_slots):
-        storage = Storage()
         led_address, led_pin = storage.led_pin(slot)
         pin = Pin(led_address, led_pin)
         pin.set_mode(PinMode.OUTPUT)
         pin.write(0)
         print("Житомирята")
 
-
 if __name__ == '__main__':
+    total_slots = 8
     # Запуск сервера в отдельном потоке
     server_thread = Thread(target=start_server)
     server_thread.start()
+
+    turn_off_all_leds(total_slots)
 
     # Запуск браузера в полноэкранном режиме
     webview.create_window("Wine App", "http://localhost:8000", fullscreen=True, text_select=False)
