@@ -47,6 +47,7 @@ def fetch_bottles_data():
         print(response.status_code)
         data = response.json()
         print(data)
+        global portions_time
         portions_time = data["volumes"]
         return sorted(data['bottles'], key=lambda x: x['slot_number'])
     except requests.RequestException as e:
