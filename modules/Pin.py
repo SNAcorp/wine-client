@@ -68,7 +68,9 @@ class Pin:
         print(f"Ожидание нажатия кнопки на пине {self.pin_number}")
         start_time = time.time()
         while True:
-            if self.read():
+            state = self.read()
+            print(state)
+            if state:
                 print(f"Кнопка на пине {self.pin_number} нажата")
                 return True
             if timeout and (time.time() - start_time) > timeout:
