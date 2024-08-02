@@ -7,6 +7,7 @@ class ButtonReader:
 
     def __init__(self, slot_number: int):
         self.storage = Storage()
+        self.storage.turn_off_all_leds()
         self.__run = True
 
         led_address, led_pin = self.storage.led_pin(slot_number)

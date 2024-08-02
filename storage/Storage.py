@@ -1,3 +1,4 @@
+from modules.Pin import Pin, PinMode
 
 class Storage:
 
@@ -67,6 +68,15 @@ class Storage:
         if not hasattr(cls, 'instance'):
             cls.instance = super(Storage, cls).__new__(cls)
         return cls.instance
+
+    def turn_off_all_leds(self):
+        """Метод для отключения всех светодиодов"""
+        pins = self.get_all_led_pins
+        for slot in pins:
+            led_address, led_pin = slot
+            pin = Pin(led_address, led_pin)
+            pin.set_mode(PinMode.OUTPUT)
+            print("Житомирята")
 
     @property
     def get_log_file_path(self) -> str:
