@@ -118,7 +118,7 @@ if __name__ == '__main__':
     server_thread = Thread(target=start_server)
     server_thread.start()
 
-    turn_off_all_leds(total_slots)
+    turn_off_all_leds()
 
     # Запуск браузера в полноэкранном режиме
     webview.create_window("Wine App", "http://localhost:8000", fullscreen=True, text_select=False)
