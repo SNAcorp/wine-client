@@ -193,28 +193,29 @@
                     alert('Невалидный rfid');
                     resetProgress();
                     showStep(0);
-                } else {
+                }
+                else {
                 rfidCode = data.rfid_code;
                 showStep(3); // Show step to press button
-                document.getElementById('complete-button').onclick = function() {
-                    stopTimer();
-                    fetch('/button', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ slot_number: selectedSlot, portion_type: portionType, rfid: rfidCode })
-                    })
-                    .then(response => response.json())
-                    .then(result => {
-                        if (result.success) {
-                            showStep(4);
-                        } else {
-                            alert(result.message || 'Доступ запрещен или лимит превышен.');
-                            resetProgress();
-                        }
-                    });
-                };
+                    {
+                        stopTimer();
+                        fetch('/button', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ slot_number: selectedSlot, portion_type: portionType, rfid: rfidCode })
+                        })
+                        .then(response => response.json())
+                        .then(result => {
+                            if (result.success) {
+                                showStep(4);
+                            } else {
+                                alert(result.message || 'Доступ запрещен или лимит превышен.');
+                                resetProgress();
+                            }
+                        });
+                    };
                 }
             });
         }
