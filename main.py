@@ -1,4 +1,6 @@
 from threading import Thread
+from modules.Pin import Pin, PinMode
+from storage.Storage import Storage
 from fastapi.templating import Jinja2Templates
 import requests
 import uvicorn
@@ -94,8 +96,19 @@ def open_browser():
     webview.start()
 
 
-def start_server():
+def start_server(total_slots: int):
     uvicorn.run(app, host="127.0.0.1", port=8000)
+    turn_off_all_leds(total_slots)
+
+
+def turn_off_all_leds(total_slots: int):
+    """Метод для отключения всех светодиодов"""
+    for slot in range(total_slots):
+        storage = Storage()
+        led_address, led_pin = storage.led_pin(slot)
+        pin = Pin(led_address, led_pin)
+        pin.set_mode(PinMode.OUTPUT)
+        pin.write(0)
 
 
 if __name__ == '__main__':
