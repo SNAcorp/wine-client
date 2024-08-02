@@ -109,6 +109,7 @@ def turn_off_all_leds(total_slots: int):
         pin = Pin(led_address, led_pin)
         pin.set_mode(PinMode.OUTPUT)
         pin.write(0)
+        print("Житомирята")
 
 
 if __name__ == '__main__':
