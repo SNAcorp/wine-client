@@ -229,7 +229,7 @@
     <main>
         <div id="step-0" class="step active container animate__animated animate__fadeIn">
             {% for bottle in bottles %}
-            {% if bottle.remaining_volume < 0.12 %}
+            {% if bottle.remaining_volume < 120 %}
                 <div class="tile" style="cursor: none;">
                     <img src="http://51.250.89.99/bottles/image/{{bottle.id}}/300" alt="{{ bottle.name }}" style="filter: grayscale(1)">
                     <h2>{{ bottle.name }}</h2>
