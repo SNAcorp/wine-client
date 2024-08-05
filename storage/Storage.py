@@ -71,14 +71,12 @@ class Storage:
 
     def turn_off_all_leds(self):
         """Метод для отключения всех светодиодов"""
-
         pins = self.get_all_led_pins
         for slot in pins:
             led_address, led_pin = slot
-            slot = Pin(led_address, led_pin)
-            off = slot.set_mode(PinMode.OUTPUT)
-            slot.write(0xFF)
-            print("Житомирята")
+            pin = Pin(led_address, led_pin)
+            pin.set_mode(PinMode.OUTPUT)
+            pin.write(1)
 
     @property
     def get_log_file_path(self) -> str:
