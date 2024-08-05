@@ -83,7 +83,7 @@ async def portion(request: Request):
 @app.get("/", response_class=JSONResponse)
 async def get_bottles(request: Request):
     bottles = fetch_bottles_data()
-    await storage.turn_off_all_leds()
+    storage.turn_off_all_leds()
     return templates.TemplateResponse("index.html", {"request": request, "bottles": bottles})
 
 
