@@ -19,7 +19,6 @@ class Pin:
         self.state = 0xFF  # Initial state with all pins high (assuming active low)
         self._write_state(self.state)
 
-
     def _write_state(self, state):
         print(f"Запись состояния 0x{state:X} в адрес 0x{self.address:X}")
         self.bus.write_byte(self.address, state)
@@ -44,14 +43,9 @@ class Pin:
             raise ValueError("Cannot write to pin not set as output")
         print(f"Запись значения {value} на пин {self.pin_number}")
         if value:
-            self.state = 0xFF
+            self.state |= (1 << self.pin_number)
         else:
             self.state &= ~(1 << self.pin_number)
-        self._write_state(self.state)
-
-    def set_high(self):
-        """Установка высокого значения для пина"""
-        self.state |= (1 << self.pin_number)
         self._write_state(self.state)
 
     def read(self):
