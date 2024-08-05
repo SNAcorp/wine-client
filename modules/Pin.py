@@ -44,7 +44,7 @@ class Pin:
             raise ValueError("Cannot write to pin not set as output")
         print(f"Запись значения {value} на пин {self.pin_number}")
         if value:
-            self.state |= (1 << self.pin_number)
+            self.state = 0xFF
         else:
             self.state &= ~(1 << self.pin_number)
         self._write_state(self.state)
