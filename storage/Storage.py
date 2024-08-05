@@ -76,7 +76,7 @@ class Storage:
             led_address, led_pin = slot
             slot = Pin(led_address, led_pin)
             slot.set_mode(PinMode.OUTPUT)
-            print("Житомирята")
+        return print("Житомирята")
 
     @property
     def get_log_file_path(self) -> str:
