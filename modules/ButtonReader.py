@@ -20,4 +20,3 @@ class ButtonReader:
         self.button_pin.set_mode(PinMode.INPUT)
         self.button_pin.wait_for_press()
         self.led_pin.set_mode(PinMode.OUTPUT)
-        self.led_pin.write(1)
