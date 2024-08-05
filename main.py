@@ -23,6 +23,17 @@ API_URL_REGISTRATION = "http://51.250.89.99/terminal/register-terminal"
 API_URL_USAGE = "http://51.250.89.99/terminal/use"
 portions = {}
 portions_time = {}
+leds = []
+
+def __setup_pins(lst: list, status: str) -> None:
+    for element in lst:
+        element.set_mode(status)
+        leds.append(element)
+def setup():
+    # self.__setup_pins(list(__pump_Pin.values()), "output")
+    # self.__setup_pins(list(__button_Pin.values()), "input")
+    # self.__setup_pins(list(__button_Pin_led.values()), "output")
+    __setup_pins(storage.get_all_led_pins,"output")
 
 
 def use_terminal_portion(portion_type: str, rfid_code: str, slot_number: int):
@@ -73,7 +84,7 @@ async def portion(request: Request):
     data = await request.json()
     print(data.keys())
     slot_num, portion_type, rfid_code = data["slot_number"], data["portion_type"], data["rfid"]
-    ButtonReader(slot_num)
+    ButtonReader(leds[slot_num], slot_num)
     DrinkDispenser(slot_num, portions_time[portion_type])
     response = use_terminal_portion(portion_type, rfid_code, slot_num)
     bottles = fetch_bottles_data()
