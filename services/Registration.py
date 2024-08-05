@@ -30,6 +30,7 @@ class TerminalRegistration:
                 self.__info = {'id': response.json()['terminal_id'],
                                'serial': serial,
                                'token': response.json()['token']}
+                print(serial)
                 break
             else:
                 time.sleep(1)
