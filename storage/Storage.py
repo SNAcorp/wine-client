@@ -74,8 +74,9 @@ class Storage:
         pins = self.get_all_led_pins
         for slot in pins:
             led_address, led_pin = slot
-            slot = Pin(led_address, led_pin)
-            slot.set_mode(PinMode.INPUT)
+            pin = Pin(led_address, led_pin)
+            pin.set_mode(PinMode.OUTPUT)
+            pin.set_high()
         return print("Житомирята")
 
     @property

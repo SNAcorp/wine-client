@@ -49,6 +49,11 @@ class Pin:
             self.state &= ~(1 << self.pin_number)
         self._write_state(self.state)
 
+    def set_high(self):
+        """Установка высокого значения для пина"""
+        self.state |= (1 << self.pin_number)
+        self._write_state(self.state)
+
     def read(self):
         if self.mode != PinMode.INPUT:
             raise ValueError("Cannot read from pin not set as input")
