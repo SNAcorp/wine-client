@@ -19,6 +19,7 @@ class Pin:
         self.state = 0xFF  # Initial state with all pins high (assuming active low)
         self._write_state(self.state)
 
+
     def _write_state(self, state):
         print(f"Запись состояния 0x{state:X} в адрес 0x{self.address:X}")
         self.bus.write_byte(self.address, state)
