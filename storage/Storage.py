@@ -77,7 +77,7 @@ class Storage:
             led_address, led_pin = slot
             slot = Pin(led_address, led_pin)
             off = slot.set_mode(PinMode.OUTPUT)
-            off.slot.write(0)
+            slot.write(0)
             print("Житомирята")
 
     @property
