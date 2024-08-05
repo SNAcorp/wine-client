@@ -69,7 +69,7 @@ class Storage:
             cls.instance = super(Storage, cls).__new__(cls)
         return cls.instance
 
-    def turn_off_all_leds(self):
+    async def turn_off_all_leds(self):
         """Метод для отключения всех светодиодов"""
         pins = self.get_all_led_pins
         for slot in pins:
