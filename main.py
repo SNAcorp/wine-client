@@ -15,6 +15,7 @@ from services.Registration import TerminalRegistration
 registration = TerminalRegistration()
 dictionaries = Dictionaries()
 app = FastAPI()
+storage = Storage()
 templates = Jinja2Templates(directory="templates")
 
 API_URL_TEMPLATE = f"http://51.250.89.99/terminal/terminal-bottles/{registration.terminal_id}"
@@ -82,7 +83,9 @@ async def portion(request: Request):
 @app.get("/", response_class=JSONResponse)
 async def get_bottles(request: Request):
     bottles = fetch_bottles_data()
+    await storage.turn_off_all_leds()
     return templates.TemplateResponse("index.html", {"request": request, "bottles": bottles})
+
 
 
 @app.get("/bottle/{slot_number}", response_class=JSONResponse)
@@ -96,7 +99,6 @@ def open_browser():
     webview.create_window("WineTech", "http://127.0.0.1:8000", fullscreen=True)
     webview.start()
 
-
 def start_server():
     uvicorn.run(app, host="127.0.0.1", port=8000)
 
@@ -106,9 +108,6 @@ if __name__ == '__main__':
     # Запуск сервера в отдельном потоке
     server_thread = Thread(target=start_server)
     server_thread.start()
-
-    storage = Storage()
-    storage.turn_off_all_leds()
 
     # Запуск браузера в полноэкранном режиме
     webview.create_window("Wine App", "http://localhost:8000", fullscreen=True, text_select=False)
