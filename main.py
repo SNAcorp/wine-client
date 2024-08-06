@@ -31,7 +31,11 @@ def __setup_pins(lst: list, status: str):
         leds.append(element)
 
 def setup():
-    __setup_pins(storage.get_all_led_pins, "output")
+    # self.__setup_pins(list(__pump_Pin.values()), "output")
+    # self.__setup_pins(list(__button_Pin.values()), "input")
+    # self.__setup_pins(list(__button_Pin_led.values()), "output")
+    __setup_pins(storage.get_all_led_pins,"output")
+
 
 def use_terminal_portion(portion_type: str, rfid_code: str, slot_number: int):
     response = requests.post(
@@ -49,6 +53,7 @@ def use_terminal_portion(portion_type: str, rfid_code: str, slot_number: int):
     else:
         return None
 
+
 def fetch_bottles_data():
     try:
         response = requests.get(API_URL_TEMPLATE)
@@ -65,6 +70,7 @@ def fetch_bottles_data():
         print(f"Error fetching bottles data: {e}")
         return []
 
+
 @app.post("/rfid", response_class=JSONResponse)
 async def rfid() -> dict:
     rfid_reader = RFIDReader()
@@ -72,6 +78,8 @@ async def rfid() -> dict:
     print(result)
     return result
 
+
+# 352481425297
 @app.post("/button", response_class=JSONResponse)
 async def portion(request: Request):
     try:
@@ -91,11 +99,14 @@ async def portion(request: Request):
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": str(e)})
 
+
 @app.get("/", response_class=JSONResponse)
 async def get_bottles(request: Request):
     bottles = fetch_bottles_data()
     await storage.turn_off_all_leds()
     return templates.TemplateResponse("index.html", {"request": request, "bottles": bottles})
+
+
 
 @app.get("/bottle/{slot_number}", response_class=JSONResponse)
 async def get_bottle_detail(request: Request, slot_number: int):
@@ -103,12 +114,15 @@ async def get_bottle_detail(request: Request, slot_number: int):
     bottle = next((b for b in bottles if b['slot_number'] == slot_number), None)
     return bottle
 
+
 def open_browser():
     webview.create_window("WineTech", "http://127.0.0.1:8000", fullscreen=True)
     webview.start()
 
 def start_server():
     uvicorn.run(app, host="127.0.0.1", port=8000)
+
+
 
 if __name__ == '__main__':
     # Запуск сервера в отдельном потоке
