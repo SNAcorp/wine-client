@@ -25,10 +25,11 @@ portions = {}
 portions_time = {}
 leds = {}
 
-def __setup_pins(lst: list, status: str) -> None:
+def __setup_pins(lst: list, status: str):
     for element in lst:
         element.set_mode(status)
         leds.append(element)
+
 def setup():
     # self.__setup_pins(list(__pump_Pin.values()), "output")
     # self.__setup_pins(list(__button_Pin.values()), "input")
@@ -36,7 +37,7 @@ def setup():
     __setup_pins(storage.get_all_led_pins,"output")
 
 
-def use_terminal_portion(portion_type: str, rfid_code: str, slot_number: int):
+def use_terminal_portion(portion_type: str, rfid_code: str, slot_number: int, leds: int):
     response = requests.post(
         API_URL_USAGE,
         json={
@@ -87,7 +88,7 @@ async def portion(request: Request):
     slot_num, portion_type, rfid_code, leds = data["slot_number"], data["portion_type"], data["rfid"], data["leds"]
     ButtonReader(leds, slot_num)
     DrinkDispenser(slot_num, portions_time[portion_type])
-    response = use_terminal_portion(portion_type, rfid_code, slot_num)
+    response = use_terminal_portion(portion_type, rfid_code, slot_num, leds)
     bottles = fetch_bottles_data()
     return {"success": True}
 
