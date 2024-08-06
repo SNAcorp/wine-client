@@ -28,8 +28,7 @@ leds = {}
 def __setup_pins(lst: list, status: str):
     for element in lst:
         element.set_mode(status)
-        leds.append(element)
-
+        leds[element.pin_number] = element
 def setup():
     # self.__setup_pins(list(__pump_Pin.values()), "output")
     # self.__setup_pins(list(__button_Pin.values()), "input")
