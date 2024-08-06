@@ -23,12 +23,13 @@ API_URL_REGISTRATION = "http://51.250.89.99/terminal/register-terminal"
 API_URL_USAGE = "http://51.250.89.99/terminal/use"
 portions = {}
 portions_time = {}
-leds = {}
+leds = []
 
 def __setup_pins(lst: list, status: str):
     for element in lst:
         element.set_mode(status)
-        leds[element.pin_number] = element
+        leds.append(element)
+
 def setup():
     # self.__setup_pins(list(__pump_Pin.values()), "output")
     # self.__setup_pins(list(__button_Pin.values()), "input")
@@ -36,7 +37,7 @@ def setup():
     __setup_pins(storage.get_all_led_pins,"output")
 
 
-def use_terminal_portion(portion_type: str, rfid_code: str, slot_number: int, leds: list):
+def use_terminal_portion(portion_type: str, rfid_code: str, slot_number: int):
     response = requests.post(
         API_URL_USAGE,
         json={
@@ -45,7 +46,6 @@ def use_terminal_portion(portion_type: str, rfid_code: str, slot_number: int, le
             "rfid_code": rfid_code,
             "slot_number": slot_number,
             "volume": portions[portion_type],
-            "leds": leds[slot_number]
         }
     )
     if response.status_code == 200:
@@ -81,13 +81,13 @@ async def rfid() -> dict:
 
 # 352481425297
 @app.post("/button", response_class=JSONResponse)
-async def portion(request: Request):
+async def portion(request: Request, leds: list):
     data = await request.json()
     print(data.keys())
-    slot_num, portion_type, rfid_code, leds = data["slot_number"], data["portion_type"], data["rfid"], data["leds"]
+    slot_num, portion_type, rfid_code, = data["slot_number"], data["portion_type"], data["rfid"]
     ButtonReader(leds, slot_num)
     DrinkDispenser(slot_num, portions_time[portion_type])
-    response = use_terminal_portion(portion_type, rfid_code, slot_num, leds)
+    response = use_terminal_portion(portion_type, rfid_code, slot_num)
     bottles = fetch_bottles_data()
     return {"success": True}
 

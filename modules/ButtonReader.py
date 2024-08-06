@@ -5,13 +5,17 @@ from modules.DrinkDispenser import DrinkDispenser
 class ButtonReader:
     """Класс для чтения состояния кнопок и управления процессом"""
 
-    def __init__(self, pin: Pin, slot_number: int):
+    def __init__(self, leds: list, slot_number: int):
         self.storage = Storage()
         self.storage.turn_off_all_leds()
         self.__run = True
 
-        button_address, button_pin = self.storage.button_pin(slot_number)
+        pin = next((led for led in leds if led.pin_number == slot_number), None)
 
+        if pin is None:
+            raise ValueError(f"No LED found for slot number {slot_number}")
+
+        button_address, button_pin = self.storage.button_pin(slot_number)
 
         pin.set_mode(PinMode.INPUT)
         self.button_pin = Pin(button_address, button_pin)
