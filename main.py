@@ -37,7 +37,7 @@ def setup():
     __setup_pins(storage.get_all_led_pins,"output")
 
 
-def use_terminal_portion(portion_type: str, rfid_code: str, slot_number: int, leds: int):
+def use_terminal_portion(portion_type: str, rfid_code: str, slot_number: int, leds: list):
     response = requests.post(
         API_URL_USAGE,
         json={
