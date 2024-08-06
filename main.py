@@ -31,11 +31,7 @@ def __setup_pins(lst: list, status: str):
         leds.append(element)
 
 def setup():
-    # self.__setup_pins(list(__pump_Pin.values()), "output")
-    # self.__setup_pins(list(__button_Pin.values()), "input")
-    # self.__setup_pins(list(__button_Pin_led.values()), "output")
-    __setup_pins(storage.get_all_led_pins,"output")
-
+    __setup_pins(storage.get_all_led_pins, "output")
 
 def use_terminal_portion(portion_type: str, rfid_code: str, slot_number: int):
     response = requests.post(
@@ -53,7 +49,6 @@ def use_terminal_portion(portion_type: str, rfid_code: str, slot_number: int):
     else:
         return None
 
-
 def fetch_bottles_data():
     try:
         response = requests.get(API_URL_TEMPLATE)
@@ -70,7 +65,6 @@ def fetch_bottles_data():
         print(f"Error fetching bottles data: {e}")
         return []
 
-
 @app.post("/rfid", response_class=JSONResponse)
 async def rfid() -> dict:
     rfid_reader = RFIDReader()
@@ -78,19 +72,24 @@ async def rfid() -> dict:
     print(result)
     return result
 
-
-# 352481425297
 @app.post("/button", response_class=JSONResponse)
-async def portion(request: Request, leds: list):
-    data = await request.json()
-    print(data.keys())
-    slot_num, portion_type, rfid_code, = data["slot_number"], data["portion_type"], data["rfid"]
-    ButtonReader(leds, slot_num)
-    DrinkDispenser(slot_num, portions_time[portion_type])
-    response = use_terminal_portion(portion_type, rfid_code, slot_num)
-    bottles = fetch_bottles_data()
-    return {"success": True}
+async def portion(request: Request):
+    try:
+        data = await request.json()
+        print("Received data:", data)
+        slot_num = data["slot_number"]
+        portion_type = data["portion_type"]
+        rfid_code = data["rfid"]
 
+        ButtonReader(leds, slot_num)
+        DrinkDispenser(slot_num, portions_time[portion_type])
+        response = use_terminal_portion(portion_type, rfid_code, slot_num)
+        bottles = fetch_bottles_data()
+        return {"success": True, "bottles": bottles}
+    except KeyError as e:
+        return JSONResponse(status_code=422, content={"error": f"Missing field: {str(e)}"})
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"error": str(e)})
 
 @app.get("/", response_class=JSONResponse)
 async def get_bottles(request: Request):
@@ -98,14 +97,11 @@ async def get_bottles(request: Request):
     await storage.turn_off_all_leds()
     return templates.TemplateResponse("index.html", {"request": request, "bottles": bottles})
 
-
-
 @app.get("/bottle/{slot_number}", response_class=JSONResponse)
 async def get_bottle_detail(request: Request, slot_number: int):
     bottles = fetch_bottles_data()
     bottle = next((b for b in bottles if b['slot_number'] == slot_number), None)
     return bottle
-
 
 def open_browser():
     webview.create_window("WineTech", "http://127.0.0.1:8000", fullscreen=True)
@@ -113,8 +109,6 @@ def open_browser():
 
 def start_server():
     uvicorn.run(app, host="127.0.0.1", port=8000)
-
-
 
 if __name__ == '__main__':
     # Запуск сервера в отдельном потоке
