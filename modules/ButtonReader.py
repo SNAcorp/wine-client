@@ -11,7 +11,7 @@ class ButtonReader:
         self.__run = True
 
         pin = next((led for led in leds if led.pin_number == slot_number), None)
-
+        print("good")
         if pin is None:
             raise ValueError(f"No LED found for slot number {slot_number}")
 
@@ -22,3 +22,4 @@ class ButtonReader:
         self.button_pin.set_mode(PinMode.INPUT)
         self.button_pin.wait_for_press()
         pin.set_mode(PinMode.OUTPUT)
+        print("very good")
