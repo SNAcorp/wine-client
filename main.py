@@ -8,7 +8,7 @@ from fastapi.responses import JSONResponse
 from modules.DrinkDispenser import DrinkDispenser
 from modules.RFIDReader import RFIDReader
 from modules.ButtonReader import ButtonReader
-from modules.LedPin import LedPin
+from modules.LedPumpPin import LedPumpPin
 from services.Dictionaries import Dictionaries
 from services.Registration import TerminalRegistration
 
