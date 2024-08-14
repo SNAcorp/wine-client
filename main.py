@@ -69,7 +69,7 @@ async def portion(request: Request):
     data = await request.json()
     print(data.keys())
     slot_num, portion_type, rfid_code = data["slot_number"], data["portion_type"], data["rfid"]
-    button_reader = ButtonReader(slot_num, button_light_controller)
+    button_reader = ButtonReader(slot_num, button_light_controller=button_light_controller)
     DrinkDispenser(slot_num, portions_time[portion_type])
     response = use_terminal_portion(portion_type, rfid_code, slot_num)
     bottles = fetch_bottles_data()
