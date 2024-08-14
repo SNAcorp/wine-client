@@ -1,4 +1,3 @@
-from modules.Pin import Pin, PinMode
 
 class Storage:
 
@@ -8,14 +7,14 @@ class Storage:
         
         
     """ Пины подсветки кнопок """
-    __button_Pin_led = {0: (0x20, 4), 1: (0x20, 5), 2: (0x20, 6), 3: (0x20, 7),
+    __button_Pin_led = {0: (0x22, 0), 1: (0x22, 1), 2: (0x22, 3), 3: (0x22, 4),
                         4: (0x22, 4), 5: (0x22, 5), 6: (0x22, 6), 7: (0x22, 7)}
 
     __led_bottle = {0: (0x23, 0), 1: (0x23, 1), 2: (0x23, 2), 3: (0x23, 3),
                     4: (0x23, 4), 5: (0x22, 3), 6: (0x23, 6), 7: (0x23, 7)}
     """ Пины для взимодействия с сигналом кнопок """
     __button_Pin = {0: (0x20, 0), 1: (0x20, 1), 2: (0x20, 2), 3: (0x20, 3),
-                    4: (0x22, 0), 5: (0x22, 1), 6: (0x22, 2), 7: (0x22, 3)}
+                    4: (0x20, 4), 5: (0x20, 5), 6: (0x20, 6), 7: (0x20, 7)}
 
     """ Пины для управления насосами (диспенсером) """
     __pump_Pin = {0: (0x21, 0), 1: (0x21, 1), 2: (0x21, 2), 3: (0x21, 3),
@@ -68,15 +67,28 @@ class Storage:
         if not hasattr(cls, 'instance'):
             cls.instance = super(Storage, cls).__new__(cls)
         return cls.instance
+    
+    #     def __init__(self):
+    # #         self.clean()
+    #         self.setup()
+    # def clean(self):
+    #     self.__clean_pins(list(self.__pump_Pin.values()))
+    #     self.__clean_pins(list(self.__button_Pin.values()))
+    #     self.__clean_pins(list(self.__button_Pin_led.values()))
+    #     self.__clean_pins(list(self.__led_bottle.values()))
+    #
+    # def __clean_pins(self, lst: list):
+    #     for element in lst:
+    #         element.clear()
 
-    async def turn_off_all_leds(self):
-        """Метод для отключения всех светодиодов"""
-        pins = self.get_all_led_pins
-        for slot in pins:
-            led_address, led_pin = slot
-            slot = Pin(led_address, led_pin)
-            slot.set_mode(PinMode.OUTPUT)
-        return print("Житомирята")
+    # def setup(self):
+    #     self.__setup_pins(list(self.__pump_Pin.values()), "output")
+    #     self.__setup_pins(list(self.__button_Pin.values()), "input")
+    #     self.__setup_pins(list(self.__button_Pin_led.values()), "output")
+    #     self.__setup_pins(list(self.__led_bottle.values()), "output")
+    # def __setup_pins(self, lst: list, status: str) -> None:
+    #     for element in lst:
+    #         element.set_mode(status)
 
     @property
     def get_log_file_path(self) -> str:
@@ -84,14 +96,6 @@ class Storage:
         Возвращаем путь к файлу с логами
         """
         return self.__path_to_log_file
-
-    @property
-    def get_all_led_pins(self) -> list:
-        """
-        Возвращаем все пины
-        """
-        return list(self.__button_Pin_led.values())
-
 
     @property
     def get_swap_file_path(self) -> str:

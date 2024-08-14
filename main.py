@@ -1,3 +1,4 @@
+from threading import Thread
 from fastapi.templating import Jinja2Templates
 import requests
 import uvicorn
@@ -7,7 +8,6 @@ from fastapi.responses import JSONResponse
 from modules.DrinkDispenser import DrinkDispenser
 from modules.RFIDReader import RFIDReader
 from modules.ButtonReader import ButtonReader
-from modules.LedsPin import ButtonLightController
 from services.Dictionaries import Dictionaries
 from services.Registration import TerminalRegistration
 
@@ -69,7 +69,7 @@ async def portion(request: Request):
     data = await request.json()
     print(data.keys())
     slot_num, portion_type, rfid_code = data["slot_number"], data["portion_type"], data["rfid"]
-    button_reader = ButtonReader(slot_num, button_light_controller=button_light_controller)
+    ButtonReader(slot_num)
     DrinkDispenser(slot_num, portions_time[portion_type])
     response = use_terminal_portion(portion_type, rfid_code, slot_num)
     bottles = fetch_bottles_data()
@@ -99,16 +99,7 @@ def start_server():
 
 
 if __name__ == '__main__':
-
-    # Инициализация и отключение всех светодиодов перед началом работы
-    leds = [
-        # Список объектов Pin, представляющих светодиоды
-    ]
-
-    button_light_controller = ButtonLightController(i2c_bus=1, leds=leds)
-
     # Запуск сервера в отдельном потоке
-
     server_thread = Thread(target=start_server)
     server_thread.start()
 
