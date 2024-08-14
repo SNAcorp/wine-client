@@ -13,6 +13,7 @@ class DrinkDispenser:
         pump_address, pump_pin_number = self.storage.dispander_pin(slot_number)
         self.pump_pin = LedPumpPin(pump_address, pump_pin_number)
         self.pump_pin.pin.set_mode(PinMode.OUTPUT)
+        self.pump_pin.pin.write(0xFF)
         self.pump_pin.pin.write(0x00)
         print("Куралес")
         time.sleep(volume)
