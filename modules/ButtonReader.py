@@ -14,8 +14,9 @@ class ButtonReader:
 
         self.led_pin = Pin(led_address, led_pin)
         self.led_pin.set_mode(PinMode.OUTPUT)
+        self.led_pin.write(0xFF)
 
         self.button_pin = Pin(button_address, button_pin)
         self.button_pin.set_mode(PinMode.INPUT)
         self.button_pin.wait_for_press()
-        #self.led_pin.set_mode(PinMode.INPUT)
+        self.led_pin.write(0x00)
