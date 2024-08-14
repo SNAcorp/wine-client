@@ -132,11 +132,11 @@ class Storage:
         """
         return self.__path_to_tech_file
 
-    def dispander_pin(self, number_of_bottle: int):
+    def dispander_pin(self, bottle_number: int):
         """
         Возвращаем номер пина нужного нам насоса
         """
-        return self.__pump_Pin.get(number_of_bottle)
+        return self.__pump_Pin.get(bottle_number)
 
     def led_pin(self, number_of_button: int):
         """
