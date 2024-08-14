@@ -1,7 +1,7 @@
 from storage.Storage import Storage
 from modules.Pin import Pin, PinMode
 from modules.DrinkDispenser import DrinkDispenser
-from modules.LedsPin import ButtonLightController  # Импортируем новый класс
+from modules.LedsPin import ButtonLightController
 
 class ButtonReader:
     """Класс для чтения состояния кнопок и управления процессом"""
