@@ -101,7 +101,7 @@ def start_server():
 
 if __name__ == '__main__':
 
-    LedPin.turn_of_all_leds()
+    LedPumpPin.turn_of_all_leds()
     # Запуск сервера в отдельном потоке
     server_thread = Thread(target=start_server)
     server_thread.start()
