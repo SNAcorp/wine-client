@@ -7,7 +7,7 @@ class LedPin:
     bus_number = 1
 
     def __init__(self, address, pin_number):
-        print(f"Инициализация Pin: {self.bus_number}, 0x{address:X}, {pin_number}")
+
         self.bus = smbus.SMBus(self.bus_number)
         self.address = address
         self.pin_number = pin_number
@@ -34,3 +34,6 @@ class LedPin:
         else:
             self.state &= ~(1 << self.pin_number)
         self._write_state_led(self.state)
+
+    def turn_of_all_leds(self):
+        self.write(self.state)
