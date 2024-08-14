@@ -9,6 +9,7 @@ from fastapi.responses import JSONResponse
 from modules.DrinkDispenser import DrinkDispenser
 from modules.RFIDReader import RFIDReader
 from modules.ButtonReader import ButtonReader
+from modules.LedsPin import ButtonLightController
 from services.Dictionaries import Dictionaries
 from services.Registration import TerminalRegistration
 
@@ -23,18 +24,6 @@ API_URL_REGISTRATION = "http://51.250.89.99/terminal/register-terminal"
 API_URL_USAGE = "http://51.250.89.99/terminal/use"
 portions = {}
 portions_time = {}
-leds = []
-
-def __setup_pins(lst: list, status: str):
-    for element in lst:
-        element.set_mode(status)
-        leds.append(element)
-
-def setup():
-    # self.__setup_pins(list(__pump_Pin.values()), "output")
-    # self.__setup_pins(list(__button_Pin.values()), "input")
-    # self.__setup_pins(list(__button_Pin_led.values()), "output")
-    __setup_pins(storage.get_all_led_pins,"output")
 
 
 def use_terminal_portion(portion_type: str, rfid_code: str, slot_number: int):
@@ -89,7 +78,7 @@ async def portion(request: Request):
         portion_type = data["portion_type"]
         rfid_code = data["rfid"]
 
-        ButtonReader(leds, slot_num)
+        ButtonReader(slot_num)
         DrinkDispenser(slot_num, portions_time[portion_type])
         response = use_terminal_portion(portion_type, rfid_code, slot_num)
         bottles = fetch_bottles_data()
@@ -125,6 +114,14 @@ def start_server():
 
 
 if __name__ == '__main__':
+
+    # Инициализация и отключение всех светодиодов перед началом работы
+    leds = [
+        # Список объектов Pin, представляющих светодиоды
+    ]
+
+    button_light_controller = ButtonLightController(i2c_bus=1, leds=leds)
+
     # Запуск сервера в отдельном потоке
     server_thread = Thread(target=start_server)
     server_thread.start()
