@@ -69,7 +69,7 @@ async def portion(request: Request):
     data = await request.json()
     print(data.keys())
     slot_num, portion_type, rfid_code = data["slot_number"], data["portion_type"], data["rfid"]
-    ButtonReader(slot_num)
+    button_reader = ButtonReader(slot_num, button_light_controller)
     DrinkDispenser(slot_num, portions_time[portion_type])
     response = use_terminal_portion(portion_type, rfid_code, slot_num)
     bottles = fetch_bottles_data()
@@ -99,12 +99,16 @@ def start_server():
 
 
 if __name__ == '__main__':
-    # Запуск сервера в отдельном потоке
+
     # Инициализация и отключение всех светодиодов перед началом работы
     leds = [
         # Список объектов Pin, представляющих светодиоды
     ]
+
     button_light_controller = ButtonLightController(i2c_bus=1, leds=leds)
+
+    # Запуск сервера в отдельном потоке
+
     server_thread = Thread(target=start_server)
     server_thread.start()
 
