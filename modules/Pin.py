@@ -16,7 +16,7 @@ class Pin:
         self.address = address
         self.pin_number = pin_number
         self.mode = PinMode.INPUT
-        self.state = 0xFF  # Initial state with all pins high (assuming active low)
+        self.state = 0x00  # Initial state with all pins high (assuming active low)
         self._write_state(self.state)
 
     def _write_state(self, state):
