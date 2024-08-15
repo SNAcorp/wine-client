@@ -39,5 +39,4 @@ class LedPumpPin:
         self.write(self.state)
 
     def turn_off_all_pump(self):
-        self.state = -0xFF
-        self.write(self.state)
+        self.write(-0xFF)
