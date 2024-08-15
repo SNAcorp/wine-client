@@ -15,6 +15,7 @@ from services.Registration import TerminalRegistration
 
 registration = TerminalRegistration()
 dictionaries = Dictionaries()
+
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 
@@ -101,7 +102,6 @@ def start_server():
 
 
 if __name__ == '__main__':
-
     LedPin.turn_of_all_leds()
     PumpPin.turn_off_all_pump()
 
