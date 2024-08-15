@@ -11,12 +11,12 @@ class PumpPin:
         self.bus = smbus.SMBus(self.bus_number)
         self.address = address
         self.pin_number = pin_number
-        self.state = -0xFF  # Initial state with all pins high (assuming active low)
-        self._write_state_led(self.state)
+        self.state = 0xFF  # Initial state with all pins high (assuming active low)
+        self._write_state_pump(self.state)
         self.pin = Pin(self.address, self.pin_number)
 
 
-    def _write_state_led(self, state):
+    def _write_state_pump(self, state):
         print(f"Запись состояния 0x{state:X} в адрес 0x{self.address:X}")
         self.bus.write_byte(self.address, state)
 
@@ -29,7 +29,7 @@ class PumpPin:
             self.state |= (1 << self.pin_number)
         else:
             self.state &= ~(1 << self.pin_number)
-        self._write_state_led(self.state)
+        self._write_state_pump(self.state)
 
     def turn_off_all_pump(self):
-        self.write(-0xFF)
+        self.write(self.state)
