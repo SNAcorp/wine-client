@@ -16,5 +16,5 @@ class DrinkDispenser:
         self.pump_pin.write(-0xFF)
         print("Куралес")
         time.sleep(volume)
-        self.pump_pin.write(0xFF)
+        self.pump_pin.write(0x00)
         print("знающий")
