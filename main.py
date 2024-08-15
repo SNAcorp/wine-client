@@ -53,15 +53,17 @@ def fetch_bottles_data():
         print(data)
         global portions_time
         portions_time = data["volumes"]
-        return sorted(data['bottles'], key=lambda x: x['slot_number'])
-    except requests.RequestException as e:
-        print(f"Error fetching bottles data: {e}")
+
         storage = Storage()
         leds_off = storage.get_all_leds_pins
         for address, pin_number in leds_off:
             leds_pin = LedPin(address, pin_number)
             leds_pin.pin.set_mode(PinMode.OUTPUT)
             leds_pin.write(0x00)
+
+        return sorted(data['bottles'], key=lambda x: x['slot_number'])
+    except requests.RequestException as e:
+        print(f"Error fetching bottles data: {e}")
         return []
 
 
