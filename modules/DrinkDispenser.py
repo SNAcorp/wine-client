@@ -1,6 +1,6 @@
 from storage.Storage import Storage
-from modules.Pin import Pin, PinMode
-from modules.LedPumpPin import LedPumpPin
+from modules.Pin import PinMode
+from modules.DispanserPin import PumpPin
 import time
 
 
@@ -12,7 +12,7 @@ class DrinkDispenser:
         print("жижа")
 
         pump_address, pump_pin_number = self.storage.dispander_pin(slot_number)
-        self.pump_pin = LedPumpPin(pump_address, pump_pin_number)
+        self.pump_pin = PumpPin(pump_address, pump_pin_number)
         self.pump_pin.pin.set_mode(PinMode.OUTPUT)
         self.pump_pin.write(0x00)
         print("Куралес")
