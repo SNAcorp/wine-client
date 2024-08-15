@@ -20,10 +20,6 @@ class PumpPin:
         print(f"Запись состояния 0x{state:X} в адрес 0x{self.address:X}")
         self.bus.write_byte(self.address, state)
 
-    def _read_state(self):
-        state = self.bus.read_byte(self.address)
-        print(f"Чтение состояния 0x{state:X} с адреса 0x{self.address:X}")
-        return state
 
     def write(self, value):
         if self.pin.mode != PinMode.OUTPUT:

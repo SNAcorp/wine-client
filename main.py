@@ -8,7 +8,7 @@ from fastapi.responses import JSONResponse
 from modules.DrinkDispenser import DrinkDispenser
 from modules.RFIDReader import RFIDReader
 from modules.ButtonReader import ButtonReader
-from modules.LedPin import LedPumpPin
+from modules.LedPin import LedPin
 from modules.DispanserPin import PumpPin
 from services.Dictionaries import Dictionaries
 from services.Registration import TerminalRegistration
@@ -102,7 +102,7 @@ def start_server():
 
 if __name__ == '__main__':
 
-    LedPumpPin.turn_of_all_leds()
+    LedPin.turn_of_all_leds()
     PumpPin.turn_off_all_pump()
 
     # Запуск сервера в отдельном потоке

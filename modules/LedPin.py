@@ -3,7 +3,7 @@ import time
 from modules.Pin import Pin, PinMode
 
 
-class LedPumpPin:
+class LedPin:
     bus_number = 1
 
     def __init__(self, address, pin_number):
