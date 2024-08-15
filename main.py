@@ -9,7 +9,8 @@ from modules.DrinkDispenser import DrinkDispenser
 from modules.RFIDReader import RFIDReader
 from modules.ButtonReader import ButtonReader
 from modules.LedPin import LedPin
-from modules.DispanserPin import PumpPin
+from storage.Storage import Storage
+from modules.Pin import PinMode
 from services.Dictionaries import Dictionaries
 from services.Registration import TerminalRegistration
 
@@ -55,6 +56,12 @@ def fetch_bottles_data():
         return sorted(data['bottles'], key=lambda x: x['slot_number'])
     except requests.RequestException as e:
         print(f"Error fetching bottles data: {e}")
+        storage = Storage()
+        leds_off = storage.get_all_leds_pins
+        for address, pin_number in leds_off:
+            leds_pin = LedPin(address, pin_number)
+            leds_pin.pin.set_mode(PinMode.OUTPUT)
+            leds_pin.write(0x00)
         return []
 
 
@@ -102,14 +109,6 @@ def start_server():
 
 
 if __name__ == '__main__':
-    from storage.Storage import Storage
-    from modules.Pin import PinMode
-    storage = Storage()
-    leds_off = storage.get_all_leds_pins
-    for address, pin_number in leds_off:
-        leds_pin = LedPin(address, pin_number)
-        leds_pin.pin.set_mode(PinMode.OUTPUT)
-        leds_pin.write(0x00)
 
     # Запуск сервера в отдельном потоке
     server_thread = Thread(target=start_server)
