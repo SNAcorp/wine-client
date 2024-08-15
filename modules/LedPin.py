@@ -1,6 +1,7 @@
 import smbus
 import time
 from modules.Pin import Pin, PinMode
+from storage.Storage import Storage
 
 
 class LedPin:
@@ -8,6 +9,7 @@ class LedPin:
 
     def __init__(self, address, pin_number):
 
+        self.storage = Storage()
         self.bus = smbus.SMBus(self.bus_number)
         self.address = address
         self.pin_number = pin_number
@@ -29,7 +31,4 @@ class LedPin:
         else:
             self.state &= ~(1 << self.pin_number)
         self._write_state_led(self.state)
-
-    def turn_of_all_leds(self):
-        self.write(self.state)
 

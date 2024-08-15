@@ -102,8 +102,12 @@ def start_server():
 
 
 if __name__ == '__main__':
-    LedPin.turn_of_all_leds()
-    PumpPin.turn_off_all_pump()
+    from storage.Storage import Storage
+    storage = Storage()
+    leds_off = storage.get_all_leds_pins
+    for address, pin_number in leds_off:
+        leds_pin = LedPin(address, pin_number)
+        leds_pin.write(0x00)
 
     # Запуск сервера в отдельном потоке
     server_thread = Thread(target=start_server)

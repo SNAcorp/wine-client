@@ -90,6 +90,11 @@ class Storage:
     #     for element in lst:
     #         element.set_mode(status)
 
+
+    @property
+    def get_all_leds_pins(self) -> list:
+        return list(self.__button_Pin_led.values())
+
     @property
     def get_log_file_path(self) -> str:
         """

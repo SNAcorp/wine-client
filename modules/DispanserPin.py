@@ -30,6 +30,3 @@ class PumpPin:
         else:
             self.state &= ~(1 << self.pin_number)
         self._write_state_pump(self.state)
-
-    def turn_off_all_pump(self):
-        self.write(self.state)
