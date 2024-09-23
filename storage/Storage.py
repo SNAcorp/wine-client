@@ -37,7 +37,7 @@ class Storage:
     __names_of_vine = {1: "1 Vine", 2: "2 Vine", 3: "3 Vine", 4: "4 Vine"}
 
     """Ссылка на сервер"""
-    __server_url = "http://51.250.89.99"
+    __server_url = "http://localhost"
 
     """Ссылка на сервер для замены бутылки в аппарате"""
     __server_url_for_replace_bottle= ""
@@ -55,7 +55,7 @@ class Storage:
     __path_to_swap_file = "technical_information/swap.json"
 
     """Ссылка для регистрации терминала"""
-    __link_for_registration = "http://51.250.89.99/terminal/register-terminal"
+    __link_for_registration = "http://localhost/terminal/register-terminal"
 
     """Ссылка для контроля состояния сервера в сети"""
     __link_for_session_control = "https://wine.mag.tc"

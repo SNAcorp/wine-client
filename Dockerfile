@@ -1,11 +1,12 @@
-# Используем базовый образ Python
+# Базовый образ
 FROM python:3.12-slim
 
-# Устанавливаем зависимости
+# Установка системных зависимостей
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpq-dev \
     gcc \
+    uvicorn \
     curl \
     gnupg \
     lsb-release \
@@ -15,36 +16,29 @@ RUN apt-get update && apt-get install -y \
     python3-smbus \
     python3-spidev \
     i2c-tools \
-    chromium \
     x11-apps \
+    libmtdev-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Устанавливаем рабочую директорию
+# Копируем файлы проекта
 WORKDIR /app
+COPY . /app
 
-# Копируем файл с зависимостями
-COPY requirements.txt .
+# Установка Python зависимостей
+COPY requirements.txt /app/
+RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install spidev RPi.GPIO smbus requests
 
-# Добавление скрипта для повторных попыток установки зависимостей
-RUN echo '#!/bin/sh\n\
-n=0\n\
-until [ "$n" -ge 5 ]\n\
-do\n\
-   pip install --no-cache-dir -r requirements.txt && break\n\
-   n=$((n+1))\n\
-   sleep 5\n\
-done' > install_requirements.sh \
-    && chmod +x install_requirements.sh \
-    && ./install_requirements.sh
+# Установка прав на запуск основного файла
+RUN chmod +x main.py
 
-# Копируем остальные файлы проекта
 COPY . .
 COPY wait-for-it.sh /wait-for-it.sh
 RUN chmod +x /wait-for-it.sh
 
-RUN pip install spidev RPi.GPIO smbus
+# Установка команд по умолчанию
+CMD ["python", "main.py"]
 
-# Указываем команду для запуска приложения
-CMD ["/bin/bash", "-c", "uvicorn main:app --host 0.0.0.0 --port 8000"]
-#& sleep 5 && chromium --no-sandbox --kiosk http://localhost:8000
+
+

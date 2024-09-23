@@ -1,4 +1,4 @@
-from pirc522 import RFID
+from pirc522.rfid import RFID
 from services.Dictionaries import Dictionaries
 import requests
 import signal
@@ -36,7 +36,7 @@ class RFIDReader:
 
     @staticmethod
     def send_to_server(uid) -> dict:
-        server_url = f"http://51.250.89.99/rfid/validate/{uid}"
+        server_url = f"http://localhost/rfid/validate/{uid}"
         response = requests.get(server_url)
         if response.status_code == 200:
             return response.json()
@@ -68,4 +68,4 @@ class RFIDReader:
                 response["rfid_code"] = uid
                 """ Если доступ разрешен """
                 return response
-                
+

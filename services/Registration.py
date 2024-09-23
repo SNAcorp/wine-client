@@ -11,7 +11,7 @@ class TerminalRegistration:
             self.link (str): Ссылка для регистрации.
             self.__info (dict): Информация о терминале.
         """
-        self.link = "http://51.250.89.99/terminal/register-terminal"
+        self.link = "http://51.250.37.160/terminals/register"
         self.__info = {}
         self.__register_terminal()
 
@@ -37,7 +37,7 @@ class TerminalRegistration:
     @staticmethod
     def __get_serial_number():
         """ Описание функции """
-        serial_number = None
+        # serial_number = "100000006c10e52f"
         try:
             # Открываем файл /proc/cpuinfo
             with open('/proc/cpuinfo', 'r') as file:
