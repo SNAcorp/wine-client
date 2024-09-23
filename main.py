@@ -22,8 +22,8 @@ registration = TerminalRegistration()
 dictionaries = Dictionaries()
 
 # URL для API запросов
-API_URL_TEMPLATE = f"http://51.250.89.99/terminal/terminal-bottles/{registration.terminal_id}"
-API_URL_USAGE = "http://51.250.89.99/terminal/use"
+API_URL_TEMPLATE = f"http://51.250.37.160/terminal/terminal-bottles/{registration.terminal_id}"
+API_URL_USAGE = "http://51.250.37.160/terminal/use"
 portions = {"small": 0, "big": 1}
 portions_time = {}
 
