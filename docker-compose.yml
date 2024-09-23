@@ -3,7 +3,7 @@ services:
     build: .
     container_name: kivy_container
     environment:
-      - DISPLAY=${DISPLAY}
+      - DISPLAY=${DISPLAY:-:0}
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix  # Для передачи X11 сокета
     devices:
