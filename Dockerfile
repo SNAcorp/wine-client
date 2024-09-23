@@ -29,7 +29,7 @@ COPY . /app
 COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install spidev RPi.GPIO smbus requests
-
+RUN pip install Pillow pygame
 # Установка прав на запуск основного файла
 RUN chmod +x main.py
 
