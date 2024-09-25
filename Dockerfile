@@ -1,4 +1,4 @@
-FROM balenalib/raspberrypi3-python:3.12-bullseye
+FROM balenalib/raspberrypi3-python:3.9-bullseye
 
 # Установка основных системных зависимостей
 RUN apt-get update && apt-get install -y \
