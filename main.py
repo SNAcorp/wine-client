@@ -1,179 +1,358 @@
-import os
-import threading
-import requests
-from kivy.app import App
+# Импорт необходимых модулей
+from kivymd.app import MDApp
+from kivymd.uix.spinner import MDSpinner
+from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.button import Button
-from kivy.uix.label import Label
-from kivy.uix.image import AsyncImage
 from kivy.clock import Clock
 from kivy.uix.popup import Popup
-
-# Импортируем модули для работы с оборудованием
-from modules.RFIDReader import RFIDReader
-from modules.DrinkDispenser import DrinkDispenser
-from modules.ButtonReader import ButtonReader
-from services.Dictionaries import Dictionaries
-from services.Registration import TerminalRegistration
-
-# Инициализируем глобальные данные
-registration = TerminalRegistration()
-dictionaries = Dictionaries()
-
-# URL для API запросов
-API_URL_TEMPLATE = f"http://51.250.37.160/terminal/terminal-bottles/{registration.terminal_id}"
-API_URL_USAGE = "http://51.250.37.160/terminal/use"
-portions = {"small": 0, "big": 1}
-portions_time = {}
+from kivy.uix.label import Label
+from threading import Thread
+import requests
 
 
-# Функция для отправки данных о порции через API
-def use_terminal_portion(portion_type: str, rfid_code: str, slot_number: int):
-    try:
-        response = requests.post(
-            API_URL_USAGE,
-            json={
-                "terminal_id": registration.terminal_id,
-                "token": registration.token,
-                "rfid_code": rfid_code,
-                "slot_number": slot_number,
-                "volume": portions[portion_type]
-            }
-        )
-        if response.status_code == 200:
-            return response.json()
-        else:
-            return None
-    except requests.RequestException as e:
-        print(f"Error using terminal portion: {e}")
-        return None
-
-
-# Функция для получения данных о бутылках через API
-def fetch_bottles_data():
-    try:
-        response = requests.get(API_URL_TEMPLATE)
-        response.raise_for_status()
-        data = response.json()
-        global portions_time
-        portions_time = data["volumes"]
-        return sorted(data['bottles'], key=lambda x: x['slot_number'])
-    except requests.RequestException as e:
-        print(f"Error fetching bottles data: {e}")
-        return []
-
-
-# Главный экран приложения
+# Определение экранов
 class MainScreen(Screen):
-    def __init__(self, **kwargs):
-        super(MainScreen, self).__init__(**kwargs)
-        layout = BoxLayout(orientation='vertical')
-        self.container = BoxLayout(orientation='vertical')
-        layout.add_widget(self.container)
-        self.add_widget(layout)
-
-    def on_enter(self):
-        # Очищаем контейнер и загружаем данные
-        self.container.clear_widgets()
-        threading.Thread(target=self.load_bottles).start()
-
-    def load_bottles(self):
-        bottles = fetch_bottles_data()
-        Clock.schedule_once(lambda dt: self.display_bottles(bottles))
-
-    def display_bottles(self, bottles):
-        for bottle in bottles:
-            tile = Button(text=f"{bottle['name']} ({bottle['location']})", size_hint_y=None, height=100,
-                          on_press=lambda x, b=bottle: self.select_bottle(b))
-            if bottle['remaining_volume'] < 120:
-                tile.disabled = True
-                tile.background_color = (0.5, 0.5, 0.5, 1)
-            self.container.add_widget(tile)
-
-    def select_bottle(self, bottle):
-        # Переход на экран с деталями бутылки
-        self.manager.current = 'details'
-        details_screen = self.manager.get_screen('details')
-        details_screen.display_bottle(bottle)
+    pass
 
 
-# Экран с деталями бутылки
-class BottleDetailsScreen(Screen):
-    selected_bottle = None
+class BottleDetailScreen(Screen):
+    pass
 
-    def __init__(self, **kwargs):
-        super(BottleDetailsScreen, self).__init__(**kwargs)
-        layout = BoxLayout(orientation='vertical')
-        self.bottle_image = AsyncImage()
-        self.bottle_name = Label(text="Название")
-        self.bottle_location = Label(text="Местоположение")
-        self.bottle_description = Label(text="Описание")
-        small_button = Button(text="Малая порция", size_hint_y=None, height=50,
-                              on_press=lambda x: self.select_portion("small"))
-        big_button = Button(text="Большая порция", size_hint_y=None, height=50,
-                            on_press=lambda x: self.select_portion("big"))
-        back_button = Button(text="Назад", size_hint_y=None, height=50, on_press=self.go_back)
 
-        layout.add_widget(self.bottle_image)
-        layout.add_widget(self.bottle_name)
-        layout.add_widget(self.bottle_location)
-        layout.add_widget(self.bottle_description)
-        layout.add_widget(small_button)
-        layout.add_widget(big_button)
-        layout.add_widget(back_button)
-        self.add_widget(layout)
+class RFIDScreen(Screen):
+    pass
 
-    def display_bottle(self, bottle):
-        # Устанавливаем изображение и данные бутылки
-        self.selected_bottle = bottle
-        image_path = f'images/{bottle["id"]}.jpg'
-        if os.path.exists(image_path):
-            self.bottle_image.source = image_path
-        else:
-            self.bottle_image.source = "https://via.placeholder.com/300x400?text=No+Image+Available"
 
-        self.bottle_name.text = bottle['name']
-        self.bottle_location.text = bottle['location']
-        self.bottle_description.text = bottle['description']
+class ButtonPressScreen(Screen):
+    pass
+
+
+class SuccessScreen(Screen):
+    pass
+
+
+# KV код с использованием KivyMD виджетов
+KV = '''
+#:import FadeTransition kivy.uix.screenmanager.FadeTransition
+#:import dp kivy.metrics.dp
+
+ScreenManager:
+    transition: FadeTransition()
+    MainScreen:
+    BottleDetailScreen:
+    RFIDScreen:
+    ButtonPressScreen:
+    SuccessScreen
+
+<MainScreen>:
+    name: 'main'
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            id: timer_label
+            text: ''
+            size_hint_y: None
+            height: dp(30)
+            color: 1, 0, 0, 1
+            halign: 'right'
+            valign: 'middle'
+        ScrollView:
+            GridLayout:
+                id: bottle_grid
+                cols: 4
+                size_hint_y: None
+                height: self.minimum_height
+                row_default_height: dp(200)
+                row_force_default: True
+                spacing: dp(10)
+                padding: dp(10)
+
+<BottleTile@Button>:
+    bottle_data: {}
+    background_normal: ''
+    background_color: (1, 1, 1, 1) if self.bottle_data['remaining_volume'] >= 120 else (0.8, 0.8, 0.8, 1)
+    disabled: False if self.bottle_data['remaining_volume'] >= 120 else True
+    on_press: app.select_bottle(self.bottle_data)
+    canvas.before:
+        Color:
+            rgba: self.background_color
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    BoxLayout:
+        orientation: 'vertical'
+        Image:
+            source: self.bottle_data['image_url']
+            allow_stretch: True
+            keep_ratio: True
+        Label:
+            text: self.bottle_data['name']
+            size_hint_y: None
+            height: self.texture_size[1]
+            halign: 'center'
+            valign: 'middle'
+            text_size: self.width, None
+        Label:
+            text: self.bottle_data['location']
+            size_hint_y: None
+            height: self.texture_size[1]
+            font_size: '14sp'
+            halign: 'center'
+            valign: 'middle'
+            text_size: self.width, None
+
+<BottleDetailScreen>:
+    name: 'detail'
+    BoxLayout:
+        orientation: 'vertical'
+        ScrollView:
+            GridLayout:
+                cols: 1
+                size_hint_y: None
+                height: self.minimum_height
+                padding: dp(10)
+                spacing: dp(10)
+                AsyncImage:
+                    id: bottle_image
+                    source: ''
+                    size_hint_y: None
+                    height: dp(300)
+                Label:
+                    id: bottle_name
+                    text: ''
+                    font_size: '24sp'
+                    size_hint_y: None
+                    height: self.texture_size[1]
+                    halign: 'center'
+                    valign: 'middle'
+                    text_size: self.width, None
+                Label:
+                    id: bottle_location
+                    text: ''
+                    font_size: '18sp'
+                    size_hint_y: None
+                    height: self.texture_size[1]
+                    halign: 'center'
+                    valign: 'middle'
+                    text_size: self.width, None
+                Label:
+                    id: bottle_description
+                    text: ''
+                    font_size: '16sp'
+                    size_hint_y: None
+                    height: self.texture_size[1]
+                    halign: 'center'
+                    valign: 'middle'
+                    text_size: self.width, None
+        BoxLayout:
+            size_hint_y: None
+            height: dp(60)
+            spacing: dp(10)
+            padding: dp(10)
+            Button:
+                text: 'Тестовая порция'
+                on_press: app.select_portion('small')
+            Button:
+                text: 'Полная порция'
+                on_press: app.select_portion('big')
+            Button:
+                text: 'Назад'
+                on_press: app.reset_progress()
+
+<RFIDScreen>:
+    name: 'rfid'
+    BoxLayout:
+        orientation: 'vertical'
+        spacing: dp(20)
+        padding: dp(20)
+        Label:
+            text: 'Приложите RFID метку'
+            font_size: '24sp'
+            halign: 'center'
+            valign: 'middle'
+            size_hint_y: None
+            height: dp(50)
+        MDSpinner:
+            size_hint: None, None
+            size: dp(50), dp(50)
+            pos_hint: {'center_x': 0.5}
+            determinate: False
+
+<ButtonPressScreen>:
+    name: 'button_press'
+    BoxLayout:
+        orientation: 'vertical'
+        spacing: dp(20)
+        padding: dp(20)
+        Label:
+            text: 'Нажмите подсвеченную кнопку для завершения операции'
+            font_size: '24sp'
+            halign: 'center'
+            valign: 'middle'
+            size_hint_y: None
+            height: dp(50)
+        Button:
+            text: 'Завершить операцию'
+            on_press: app.complete_operation()
+
+<SuccessScreen>:
+    name: 'success'
+    BoxLayout:
+        orientation: 'vertical'
+        spacing: dp(20)
+        padding: dp(20)
+        Label:
+            text: 'Операция успешно выполнена!'
+            font_size: '24sp'
+            halign: 'center'
+            valign: 'middle'
+            size_hint_y: None
+            height: dp(50)
+        Button:
+            text: 'Вернуться в главное меню'
+            on_press: app.reset_progress()
+'''
+
+
+# Главный класс приложения
+class WineApp(MDApp):
+    def build(self):
+        self.title = 'WineTech'
+        self.icon = 'icon.png'  # Замените на путь к иконке вашего приложения
+        self.sm = Builder.load_string(KV)
+        self.bottles = []
+        self.selected_bottle = None
+        self.rfid_code = None
+        self.portion_type = None
+        self.portions_time = {}
+        self.time_left = 60
+        self.countdown_event = None
+
+        self.load_bottles_data()
+        return self.sm
+
+    def load_bottles_data(self):
+        try:
+            # Замените на ваш реальный URL для получения данных
+            API_URL = f'http://51.250.89.99/terminal/terminal-bottles/YOUR_TERMINAL_ID'
+            response = requests.get(API_URL)
+            response.raise_for_status()
+            data = response.json()
+            self.bottles = data['bottles']
+            self.portions_time = data['volumes']
+            self.populate_menu()
+        except requests.RequestException as e:
+            print(f"Ошибка при загрузке данных: {e}")
+            self.show_error_popup("Ошибка при загрузке данных. Проверьте соединение.")
+
+    def populate_menu(self):
+        main_screen = self.sm.get_screen('main')
+        bottle_grid = main_screen.ids.bottle_grid
+        bottle_grid.clear_widgets()
+        for bottle in self.bottles:
+            bottle_data = {
+                'id': bottle['id'],
+                'name': bottle['name'],
+                'location': bottle['location'].replace('\n', ' · '),
+                'description': bottle['description'],
+                'image_url': f"http://51.250.89.99/bottles/image/{bottle['id']}/300",
+                'slot_number': bottle['slot_number'],
+                'remaining_volume': bottle['remaining_volume']
+            }
+            tile = Builder.template('BottleTile', bottle_data=bottle_data)
+            bottle_grid.add_widget(tile)
+
+    def select_bottle(self, bottle_data):
+        self.selected_bottle = bottle_data
+        detail_screen = self.sm.get_screen('detail')
+        detail_screen.ids.bottle_image.source = f"http://51.250.89.99/bottles/image/{bottle_data['id']}/600"
+        detail_screen.ids.bottle_name.text = bottle_data['name']
+        detail_screen.ids.bottle_location.text = bottle_data['location']
+        detail_screen.ids.bottle_description.text = bottle_data['description']
+        self.sm.current = 'detail'
+        self.start_timer()
 
     def select_portion(self, portion_type):
-        threading.Thread(target=self.handle_portion, args=(portion_type,)).start()
+        self.portion_type = portion_type
+        self.sm.current = 'rfid'
+        Thread(target=self.read_rfid).start()
 
-    def handle_portion(self, portion_type):
-        # Запуск процесса через RFIDReader и DrinkDispenser
-        rfid_reader = RFIDReader()
-        rfid_code = rfid_reader.start_reading()
+    def read_rfid(self):
+        # Ваш код для чтения RFID
+        try:
+            from modules.RFIDReader import RFIDReader
+            rfid_reader = RFIDReader()
+            result = rfid_reader.start_reading()
+            if not result['is_valid']:
+                self.show_error_popup('Невалидный RFID')
+            else:
+                self.rfid_code = result['rfid_code']
+                self.sm.current = 'button_press'
+        except Exception as e:
+            print(f"Ошибка при чтении RFID: {e}")
+            self.show_error_popup('Ошибка при чтении RFID')
 
-        slot_number = self.selected_bottle['slot_number']
-        dispenser = DrinkDispenser(slot_number, portions_time[portion_type])
-        dispenser.pour()
+    def complete_operation(self):
+        # Ваш код для завершения операции
+        try:
+            from modules.ButtonReader import ButtonReader
+            from modules.DrinkDispenser import DrinkDispenser
 
-        response = use_terminal_portion(portion_type, rfid_code, slot_number)
-        if response:
-            Clock.schedule_once(lambda dt: self.show_success())
-        else:
-            Clock.schedule_once(lambda dt: self.show_error())
+            ButtonReader(self.selected_bottle['slot_number'])
+            DrinkDispenser(self.selected_bottle['slot_number'], self.portions_time[self.portion_type])
 
-    def show_success(self):
-        popup = Popup(title="Успех", content=Label(text="Порция успешно выдана!"), size_hint=(0.6, 0.4))
+            # Отправка данных об использовании терминала
+            API_URL_USAGE = 'http://51.250.89.99/terminal/use'
+            payload = {
+                "terminal_id": 'YOUR_TERMINAL_ID',
+                "token": 'YOUR_TOKEN',
+                "rfid_code": self.rfid_code,
+                "slot_number": self.selected_bottle['slot_number'],
+                "volume": self.portion_type
+            }
+            response = requests.post(API_URL_USAGE, json=payload)
+            if response.status_code == 200:
+                self.sm.current = 'success'
+            else:
+                self.show_error_popup('Доступ запрещён или лимит превышен.')
+        except Exception as e:
+            print(f"Ошибка при завершении операции: {e}")
+            self.show_error_popup('Ошибка при завершении операции')
+
+    def reset_progress(self):
+        self.selected_bottle = None
+        self.rfid_code = None
+        self.portion_type = None
+        self.stop_timer()
+        self.sm.current = 'main'
+
+    def show_error_popup(self, message):
+        popup = Popup(title='Ошибка',
+                      content=Label(text=message),
+                      size_hint=(0.8, 0.3))
         popup.open()
+        self.reset_progress()
 
-    def show_error(self):
-        popup = Popup(title="Ошибка", content=Label(text="Не удалось выдать порцию."), size_hint=(0.6, 0.4))
-        popup.open()
+    def start_timer(self):
+        self.time_left = 60
+        self.update_timer_label()
+        self.countdown_event = Clock.schedule_interval(self.update_timer, 1)
 
-    def go_back(self, instance):
-        self.manager.current = 'main'
+    def stop_timer(self):
+        if self.countdown_event:
+            self.countdown_event.cancel()
+            self.sm.get_screen('main').ids.timer_label.text = ''
 
+    def update_timer(self, dt):
+        self.time_left -= 1
+        self.update_timer_label()
+        if self.time_left <= 0:
+            self.stop_timer()
+            self.reset_progress()
 
-# Основное приложение Kivy
-class WineApp(App):
-    def build(self):
-        sm = ScreenManager(transition=FadeTransition())
-        sm.add_widget(MainScreen(name='main'))
-        sm.add_widget(BottleDetailsScreen(name='details'))
-        return sm
+    def update_timer_label(self):
+        timer_label = self.sm.get_screen('main').ids.timer_label
+        timer_label.text = f'Осталось времени: {self.time_left} сек'
 
 
 if __name__ == '__main__':
