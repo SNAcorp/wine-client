@@ -40,12 +40,14 @@ RUN apt-get update && apt-get install -y \
     libgles2-mesa \
     libssl-dev \
     libffi-dev \
-    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /var/lib/apt/lists/*
 
+# Установка pip
 RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
     python get-pip.py && \
     rm get-pip.py
-# Установка необходимых Python-зависимостей
+
+# Обновление pip и установка основных Python-зависимостей
 RUN pip install --upgrade pip setuptools wheel
 
 # Установка зависимостей Kivy
@@ -54,7 +56,7 @@ RUN pip install cython kivy kivymd
 # Установка дополнительных зависимостей
 RUN pip install spidev RPi.GPIO smbus requests Pillow
 
-# Установка pygame (используем предварительно скомпилированные колеса, если доступны)
+# Установка pygame
 RUN pip install pygame
 
 # Копирование приложения в контейнер
@@ -69,7 +71,3 @@ RUN chmod +x main.py
 
 # Команда запуска приложения
 CMD ["python", "main.py"]
-
-
-
-
