@@ -38,11 +38,13 @@ RUN apt-get update && apt-get install -y \
     libmtdev-dev \
     libgl1-mesa-glx \
     libgles2-mesa \
-    python3-pip \
     libssl-dev \
     libffi-dev \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
 
+RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
+    python get-pip.py && \
+    rm get-pip.py
 # Установка необходимых Python-зависимостей
 RUN pip install --upgrade pip setuptools wheel
 
