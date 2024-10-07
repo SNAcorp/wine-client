@@ -9,10 +9,11 @@ BEAGLEBONE = object()
 board = RASPBERRY
 def_pin_rst = 22
 def_pin_irq = 18
+import RPi.GPIO as GPIO
+def_pin_mode = GPIO.BOARD
 try:
     # Try with Raspberry PI imports first
     import spidev
-    import RPi.GPIO as GPIO
     SPIClass = spidev.SpiDev
     def_pin_rst = 22
     def_pin_irq = 18
