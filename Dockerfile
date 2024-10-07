@@ -12,7 +12,6 @@ RUN apt-get update && apt-get install -y \
     libgtk-3-dev \
     libwebkit2gtk-4.0-dev \
     python3-rpi.gpio \
-    Adafruit_BBIO \
     python3-smbus \
     i2c-tools \
     chromium \
