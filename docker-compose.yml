@@ -1,19 +1,14 @@
 services:
-  kivy_app:
+  web:
     build: .
-    container_name: kivy_container
-    environment:
-      - DISPLAY=${DISPLAY:-:0}
+    command: /bin/bash -c "uvicorn main:app --host 0.0.0.0 --port 80"
+    ports:
+      - "80:00"
     volumes:
-      - /tmp/.X11-unix:/tmp/.X11-unix  # Для передачи X11 сокета
+      - /tmp/.X11-unix:/tmp/.X11-unix
     devices:
       - "/dev/dri:/dev/dri"
       - "/dev/mem:/dev/mem"
       - "/dev/gpiomem:/dev/gpiomem"
       - "/dev/i2c-1:/dev/i2c-1"
-      - "/dev/spidev0.0:/dev/spidev0.0"
-    privileged: true                    # Для доступа к устройствам
-    command: python main.py
-
-
-
+    privileged: true
