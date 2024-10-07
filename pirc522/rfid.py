@@ -7,6 +7,8 @@ logger = logging.getLogger(__name__)
 RASPBERRY = object()
 BEAGLEBONE = object()
 board = RASPBERRY
+def_pin_rst = 22
+def_pin_irq = 18
 try:
     # Try with Raspberry PI imports first
     import spidev
