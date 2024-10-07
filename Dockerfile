@@ -32,7 +32,9 @@ do\n\
    sleep 5\n\
 done' > install_requirements.sh \
     && chmod +x install_requirements.sh \
-    && ./install_requirements.sh
+    && ./install_requirements.sh \
+
+RUN pip install RPi.GPIO smbus uvicorn spidev
 
 # Копируем остальные файлы проекта
 COPY . .
