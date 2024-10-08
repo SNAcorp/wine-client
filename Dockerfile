@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Устанавливаем Python-зависимости (включая RPi.GPIO)
-RUN pip install RPi.GPIO smbus spidev uvicorn
+RUN pip install RPi.GPIO smbus spidev uvicorn requests
 
 # Копируем файл с зависимостями
 COPY requirements.txt .
