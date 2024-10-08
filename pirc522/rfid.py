@@ -8,7 +8,8 @@ RASPBERRY = object()
 BEAGLEBONE = object()
 board = RASPBERRY
 def_pin_rst = 22
-def_pin_irq = 18try:
+def_pin_irq = 18
+try:
     # Try with Raspberry PI imports first
     import spidev
     import RPi.GPIO as GPIO
