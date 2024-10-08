@@ -2,8 +2,8 @@ import smbus
 import time
 
 class PinMode:
-    INPUT = 0
-    OUTPUT = 1
+    INPUT = 1
+    OUTPUT = 0
 
 class PumpPin:
     bus_number = 1
@@ -13,7 +13,7 @@ class PumpPin:
         self.bus = smbus.SMBus(self.bus_number)
         self.address = address
         self.pin_number = pin_number
-        self.mode = PinMode.INPUT
+        self.mode = PinMode.OUTPUT
         self.state = 0xFF  # Initial state with all pins high (assuming active low)
         self._write_state_pump(self.state)
         self.pin = (self.address, self.pin_number)
