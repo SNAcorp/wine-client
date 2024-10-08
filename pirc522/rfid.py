@@ -9,16 +9,13 @@ BEAGLEBONE = object()
 board = RASPBERRY
 def_pin_rst = 22
 def_pin_irq = 18
-try:
-    # Try with Raspberry PI imports first
-    import spidev
-    import RPi.GPIO as GPIO
-    SPIClass = spidev.SpiDev
-    def_pin_rst = 22
-    def_pin_irq = 18
-    def_pin_mode = GPIO.BOARD
-except ImportError:
-    print("Failed to import spidev and/or RPi.GPIO")
+
+import spidev
+import RPi.GPIO as GPIO
+SPIClass = spidev.SpiDev
+def_pin_rst = 22
+def_pin_irq = 18
+def_pin_mode = GPIO.BOARD
 
 class RFID(object):
     pin_rst = 22
