@@ -1,7 +1,7 @@
 # Используем базовый образ Python
 FROM python:3.12-slim
 
-# Устанавливаем зависимости
+# Устанавливаем зависимости через apt
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpq-dev \
@@ -11,7 +11,6 @@ RUN apt-get update && apt-get install -y \
     lsb-release \
     libgtk-3-dev \
     libwebkit2gtk-4.0-dev \
-    python3-rpi.gpio \
     python3-dev \
     python3-spidev \
     python3-smbus \
@@ -19,10 +18,13 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# Устанавливаем Python-зависимости (включая RPi.GPIO)
+RUN pip install RPi.GPIO smbus spidev uvicorn
+
 # Копируем файл с зависимостями
 COPY requirements.txt .
 
-# Добавление скрипта для повторных попыток установки зависимостей
+# Скрипт для повторных попыток установки зависимостей
 RUN echo '#!/bin/sh\n\
 n=0\n\
 until [ "$n" -ge 5 ]\n\
@@ -32,17 +34,14 @@ do\n\
    sleep 5\n\
 done' > install_requirements.sh \
     && chmod +x install_requirements.sh \
-    && ./install_requirements.sh \
+    && ./install_requirements.sh
 
-RUN pip install RPi.GPIO smbus uvicorn spidev
-
-# Копируем остальные файлы проекта
+# Копируем файлы проекта
 COPY . .
 COPY wait-for-it.sh /wait-for-it.sh
 RUN chmod +x /wait-for-it.sh
 
 EXPOSE 80
 
-# Указываем команду для запуска приложения
+# Команда для запуска приложения
 CMD ["/bin/bash", "-c", "uvicorn main:app --host 0.0.0.0 --port 80"]
-#& sleep 5 && chromium --no-sandbox --kiosk http://localhost:8000
