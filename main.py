@@ -6,7 +6,7 @@ from fastapi.responses import JSONResponse
 from modules.DrinkDispenser import DrinkDispenser
 from modules.RFIDReader import RFIDReader
 from modules.ledPin import LedController
-
+import RPi.GPIO as GPIO
 app = FastAPI()
 
 portions = {"small": 3, "big": 9}
@@ -14,6 +14,7 @@ portions = {"small": 3, "big": 9}
 
 @app.post("/rfid", response_class=JSONResponse)
 async def rfid() -> dict:
+    GPIO.setmode(GPIO.BOARD)
     rfid_reader = RFIDReader()
     result = rfid_reader.start_reading()
     return {"rfid_code": result}
