@@ -89,11 +89,16 @@ class RFID(object):
             self.spi.msh = speed
 
         if pin_mode is not None:
-            if GPIO.getmode() is not None:
-                print("GPIO mode already set")
-                GPIO.cleanup()
-            print("GPIO mode is:", GPIO.getmode())
-            GPIO.setmode(pin_mode)
+            # Проверяем, установлен ли уже режим, чтобы не переустанавливать его
+            current_mode = GPIO.getmode()
+            if current_mode is not None and current_mode != pin_mode:
+                print(f"GPIO mode already set to {current_mode}, cleaning up.")
+                GPIO.cleanup()  # Сбрасываем настройки GPIO
+            elif current_mode == pin_mode:
+                print(f"GPIO mode is already set to the correct mode: {current_mode}")
+            else:
+                print("GPIO mode is:", GPIO.getmode())
+                GPIO.setmode(pin_mode)
 #         if pin_rst != 0:
 #             GPIO.setup(pin_rst, GPIO.OUT)
 #             GPIO.output(pin_rst, 1)
