@@ -6,7 +6,7 @@ from adafruit_pca9685 import PCA9685
 
 # Класс управления светодиодами
 class LedController:
-    def __init__(self, address: int, channel: int, frequency: int = 1000):
+    def __init__(self, address: int, channel: int, frequency: int = 1500):
         i2c = busio.I2C(board.SCL, board.SDA)
         self.pca = PCA9685(i2c, address=address)
         self.pca.frequency = frequency
@@ -21,8 +21,6 @@ class LedController:
         for i in range(steps, -1, -1):
             self.channel.duty_cycle = int(i * 65535 / steps)
             time.sleep(delay)
-        self.channel.duty_cycle = 65535
-        time.sleep(3)
 
     def turn_off(self):
         self.channel.duty_cycle = 0
