@@ -36,13 +36,14 @@ class RFIDReader:
 
     @staticmethod
     def send_to_server(uid) -> dict:
-        server_url = f"http://localhost/rfid/validate/{uid}"
-        response = requests.get(server_url)
-        if response.status_code == 200:
-            return response.json()
-        else:
-            return {"status": "broken"}
-#         return {'access_granted': "granted", 'limit': "1:00"}
+        # server_url = f"http://localhost/rfid/validate/{uid}"
+        # response = requests.get(server_url)
+        # if response.status_code == 200:
+        #     return response.json()
+        # else:
+        #     return {"status": "broken"}
+        return {'access_granted': "granted"}
+
 
     def start_reading(self):
         """ Основная функция для считывания меток """
@@ -64,8 +65,8 @@ class RFIDReader:
                 print("UID: " + uid)
 
                 """Отправляем UID метки на сервер """
-                response = self.send_to_server(uid)
-                response["rfid_code"] = uid
+                # response = self.send_to_server(uid)
+                # response["rfid_code"] = uid
                 """ Если доступ разрешен """
-                return response
+                return uid
 

@@ -4,7 +4,7 @@ import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from modules.DrinkDispenser import DrinkDispenser
-# from modules.RFIDReader import RFIDReader
+from modules.RFIDReader import RFIDReader
 from modules.ledPin import LedController
 
 app = FastAPI()
@@ -12,12 +12,11 @@ app = FastAPI()
 portions = {"small": 3, "big": 9}
 
 
-# @app.post("/rfid", response_class=JSONResponse)
-# async def rfid() -> dict:
-#     rfid_reader = RFIDReader()
-#     result = rfid_reader.start_reading()
-#     print(result)
-#     return result
+@app.post("/rfid", response_class=JSONResponse)
+async def rfid() -> dict:
+    rfid_reader = RFIDReader()
+    result = rfid_reader.start_reading()
+    return {"rfid_code": result}
 
 
 # 352481425297
