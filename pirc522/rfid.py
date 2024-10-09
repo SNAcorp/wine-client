@@ -89,6 +89,8 @@ class RFID(object):
             self.spi.msh = speed
 
         if pin_mode is not None:
+            if GPIO.getmode() is not None:
+                GPIO.cleanup()
             GPIO.setmode(pin_mode)
 #         if pin_rst != 0:
 #             GPIO.setup(pin_rst, GPIO.OUT)

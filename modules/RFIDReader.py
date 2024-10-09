@@ -11,8 +11,6 @@ class RFIDReader:
 
     def __init__(self):
         self.run = True
-        if GPIO.getmode() is not None:
-            GPIO.cleanup()
         self.rdr = RFID()
         self.util = self.rdr.util()
         self.util.debug = True
