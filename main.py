@@ -4,7 +4,7 @@ import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from modules.DrinkDispenser import DrinkDispenser
-from modules.RFIDReader import RFIDReader
+# from modules.RFIDReader import RFIDReader
 from modules.ledPin import LedController
 
 app = FastAPI()
@@ -12,12 +12,12 @@ app = FastAPI()
 portions = {"small": 3, "big": 9}
 
 
-@app.post("/rfid", response_class=JSONResponse)
-async def rfid() -> dict:
-    rfid_reader = RFIDReader()
-    result = rfid_reader.start_reading()
-    print(result)
-    return result
+# @app.post("/rfid", response_class=JSONResponse)
+# async def rfid() -> dict:
+#     rfid_reader = RFIDReader()
+#     result = rfid_reader.start_reading()
+#     print(result)
+#     return result
 
 
 # 352481425297
@@ -29,20 +29,15 @@ async def portion(request: Request):
 
     return {"success": True}
 
-@app.post("/led", response_class=JSONResponse)
-async def portion(request: Request):
+@app.post("/led/{num}", response_class=JSONResponse)
+async def portion(request: Request, num: int):
 
     # Управляем светодиодом на 0 канале с адресом 0x40
-    led = LedController(address=0x40, channel=0)
-    led2 = LedController(address=0x40, channel=1)
+    led = LedController(address=0x40, channel=num)
 
     led.fade_in(steps=100, delay=0.05)  # Плавное включение
     time.sleep(1)
-    led2.fade_in(steps=100, delay=0.05)  # Плавное включение
-    time.sleep(1)
     led.fade_out(steps=100, delay=0.05)  # Плавное выключение
-    led2.fade_out(steps=100, delay=0.05)  # Плавное выключение
-
     time.sleep(1)
 
     return {"success": True}

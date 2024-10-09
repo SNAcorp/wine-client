@@ -4,3 +4,5 @@ pydantic
 smbus
 spidev
 requests
+adafruit-circuitpython-pca9685
+adafruit-blinka
