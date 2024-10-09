@@ -11,16 +11,16 @@ board = RASPBERRY
 import spidev
 import RPi.GPIO as GPIO
 SPIClass = spidev.SpiDev
-def_pin_rst = 25
-def_pin_irq = 24
-def_pin_mode = GPIO.BCM
+def_pin_rst = 22
+def_pin_irq = 18
+def_pin_mode = GPIO.BOARD
 
 
 
 class RFID(object):
-    pin_rst = 25
+    pin_rst = 22
     pin_ce = 0
-    pin_irq = 24
+    pin_irq = 18
 
     mode_idle = 0x00
     mode_auth = 0x0E
@@ -82,7 +82,6 @@ class RFID(object):
         else:
             self.spi.mode = 0
             self.spi.msh = speed
-
 #         if pin_rst != 0:
 #             GPIO.setup(pin_rst, GPIO.OUT)
 #             GPIO.output(pin_rst, 1)
