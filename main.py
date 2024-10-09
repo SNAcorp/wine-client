@@ -1,8 +1,11 @@
+import time
+
 import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from modules.DrinkDispenser import DrinkDispenser
 from modules.RFIDReader import RFIDReader
+from modules.ledPin import LedController
 
 app = FastAPI()
 
@@ -25,6 +28,20 @@ async def portion(request: Request):
     DrinkDispenser(slot_num, portions[portion_type])
 
     return {"success": True}
+
+@app.post("/led", response_class=JSONResponse)
+async def portion(request: Request):
+
+    # Управляем светодиодом на 0 канале с адресом 0x40
+    led = LedController(address=0x40, channel=0)
+
+    led.fade_in(steps=100, delay=0.05)  # Плавное включение
+    time.sleep(1)
+    led.fade_out(steps=100, delay=0.05)  # Плавное выключение
+
+    return {"success": True}
+
+
 
 
 if __name__ == '__main__':

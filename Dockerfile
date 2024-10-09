@@ -20,6 +20,7 @@ RUN apt-get update && apt-get install -y \
 
 # Устанавливаем Python-зависимости (включая RPi.GPIO)
 RUN pip install RPi.GPIO smbus spidev uvicorn requests
+RUN pip install adafruit-circuitpython-pca9685 adafruit-blinka
 
 # Копируем файл с зависимостями
 COPY requirements.txt .
