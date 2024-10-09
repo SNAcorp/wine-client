@@ -12,7 +12,7 @@ class RFIDReader:
 
     def __init__(self):
         self.run = True
-
+        GPIO.cleanup()  # Очищаем все предыдущие настройки GPIO
         # Устанавливаем GPIO режим BCM
         current_mode = GPIO.getmode()
         if current_mode is not None and current_mode != GPIO.BCM:
