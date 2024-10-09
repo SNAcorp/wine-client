@@ -7,19 +7,14 @@ logger = logging.getLogger(__name__)
 RASPBERRY = object()
 BEAGLEBONE = object()
 board = RASPBERRY
+
+import spidev
+import RPi.GPIO as GPIO
+SPIClass = spidev.SpiDev
 def_pin_rst = 22
 def_pin_irq = 18
-# Try with Raspberry PI imports first
-try:
-    # Try with Raspberry PI imports first
-    import spidev
-    import RPi.GPIO as GPIO
-    SPIClass = spidev.SpiDev
-    def_pin_rst = 22
-    def_pin_irq = 18
-    def_pin_mode = GPIO.BOARD
-except ImportError:
-    print("Failed to import spidev and/or RPi.GPIO")
+def_pin_mode = GPIO.BOARD
+
 
 
 class RFID(object):
