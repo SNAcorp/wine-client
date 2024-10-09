@@ -90,7 +90,9 @@ class RFID(object):
 
         if pin_mode is not None:
             if GPIO.getmode() is not None:
+                print("GPIO mode already set")
                 GPIO.cleanup()
+            print("GPIO mode is:", GPIO.getmode())
             GPIO.setmode(pin_mode)
 #         if pin_rst != 0:
 #             GPIO.setup(pin_rst, GPIO.OUT)
