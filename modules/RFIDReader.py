@@ -11,6 +11,16 @@ class RFIDReader:
 
     def __init__(self):
         self.run = True
+            # Проверяем, установлен ли уже режим, чтобы не переустанавливать его
+        current_mode = GPIO.getmode()
+        if current_mode is not None and current_mode != GPIO.BOARD:
+            print(f"GPIO mode already set to {current_mode}, cleaning up.")
+            GPIO.cleanup()  # Сбрасываем настройки GPIO
+        elif current_mode == GPIO.BOARD:
+            print(f"GPIO mode is already set to the correct mode: {current_mode}")
+        else:
+            print("GPIO mode is:", GPIO.getmode())
+            GPIO.setmode(GPIO.BOARD)
         self.rdr = RFID()
         self.util = self.rdr.util()
         self.util.debug = True
