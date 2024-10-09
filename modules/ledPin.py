@@ -12,7 +12,7 @@ class LedController:
         self.pca.frequency = frequency
         self.channel = self.pca.channels[channel]
 
-    def fade_in(self, steps: int = 100, delay: float = 0.05):
+    def fade_in(self, steps: int = 100, delay: float = 0.1):
         for i in range(steps):
             self.channel.duty_cycle = int(i * 65535 / steps)
             time.sleep(delay)
