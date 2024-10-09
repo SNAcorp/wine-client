@@ -22,7 +22,7 @@ class LedController:
             self.channel.duty_cycle = int(i * 65535 / steps)
             time.sleep(delay)
         self.channel.duty_cycle = 65535
-        time.sleep(delay)
+        time.sleep(3)
 
     def turn_off(self):
         self.channel.duty_cycle = 0
