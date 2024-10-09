@@ -34,10 +34,16 @@ async def portion(request: Request):
 
     # Управляем светодиодом на 0 канале с адресом 0x40
     led = LedController(address=0x40, channel=0)
+    led2 = LedController(address=0x40, channel=1)
 
     led.fade_in(steps=100, delay=0.05)  # Плавное включение
     time.sleep(1)
+    led2.fade_in(steps=100, delay=0.05)  # Плавное включение
+    time.sleep(1)
     led.fade_out(steps=100, delay=0.05)  # Плавное выключение
+    led2.fade_out(steps=100, delay=0.05)  # Плавное выключение
+
+    time.sleep(1)
 
     return {"success": True}
 
