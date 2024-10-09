@@ -14,19 +14,19 @@ class LedController:
 
     def fade_in(self, steps: int = 100, delay: float = 0.1):
         for i in range(steps):
-            self.channel.duty_cycle = int(i * 1048576 / steps)
+            self.channel.duty_cycle = int(i * 524288 / steps)
             time.sleep(delay)
 
     def fade_out(self, steps: int = 100, delay: float = 0.05):
         for i in range(steps, -1, -1):
-            self.channel.duty_cycle = int(i * 1048576 / steps)
+            self.channel.duty_cycle = int(i * 524288 / steps)
             time.sleep(delay)
 
     def turn_off(self):
         self.channel.duty_cycle = 0
 
     def turn_on(self, brightness: float = 1.0):
-        self.channel.duty_cycle = int(1048576 * brightness)
+        self.channel.duty_cycle = int(524288 * brightness)
 
     def deinit(self):
         self.pca.deinit()
